@@ -28,26 +28,26 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- *
- * @author peter
- * @param <T> type of Task return value.
+ * An implementation of the Remote Computer interface.
+ * @author Peter Cappello
+ * @param <T> type of the return value of the Task that the Computer executes.
  */
 public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
 {
     public ComputerImpl() throws RemoteException {}
             
     /**
-     *
+     * Execute a Task.
      * @param task to be executed.
-     * @return the return-value of the executed task.
+     * @return the return-value of the Task execute method.
      * @throws RemoteException
      */
     @Override
     public Result<T> execute( Task<T> task ) throws RemoteException 
     { 
-        long startTime = System.nanoTime();
-        T value = task.execute();
-        long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds
+        final long startTime = System.nanoTime();
+        final T value = task.execute();
+        final long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds
         return new Result<>( value, runTime );
     }
     
@@ -59,21 +59,16 @@ public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
          */
         final String domainName = "localhost";
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
-        Computer2Space space = (Computer2Space) Naming.lookup( url );
+        final Computer2Space space = (Computer2Space) Naming.lookup( url );
 //        Computer2Space space = new SpaceImpl();
         space.register( new ComputerImpl() );
         System.out.println( "Computer running." );
-        
-        /**
-         * Its main method gets the domain name of its Space's machine from the command line. 
-         * Using Naming.lookup, it gets a remote reference to the Computer2Space service from the rmiregistry.
-        * Registers itself with the Space: Computers do not register themselves into an RmiRegistry.
-         */
     }
 
+    /**
+     * Terminate the JVM.
+     * @throws RemoteException - always!
+     */
     @Override
-    public void exit() throws RemoteException 
-    {
-        System.exit( 0 );
-    }
+    public void exit() throws RemoteException { System.exit( 0 ); }
 }

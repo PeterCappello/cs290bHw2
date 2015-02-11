@@ -11,8 +11,8 @@ import api.Task;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
@@ -26,7 +26,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
 {
     private final BlockingQueue<Task> taskQ     = new LinkedBlockingQueue<>();
     private final BlockingQueue<Result> resultQ = new LinkedBlockingQueue<>();
-    private final List<ComputerProxy> computerProxies = new LinkedList<>();
+    private final Map<Computer,ComputerProxy> computerProxies = new HashMap<>();
     private static int computerIds = 0;
     
     public SpaceImpl() throws RemoteException 
@@ -34,11 +34,19 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         Logger.getLogger( SpaceImpl.class.getName() ).log( Level.INFO, "Space started." );
     }
     
+    /**
+     * Put a task into the Task queue.
+     * @param task
+     */
     @Override
-    public void put(Task task) throws RemoteException { taskQ.add(task); }
+    public void put(Task task) { taskQ.add(task); }
 
+    /**
+     * Take a Result from the Result queue.
+     * @return a Result object.
+     */
     @Override
-    public Result take() throws RemoteException 
+    public Result take() 
     {
         try 
         {
@@ -55,21 +63,21 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     @Override
     public void exit() throws RemoteException 
     {
-        computerProxies.forEach( proxy -> proxy.exit() );
+        computerProxies.values().forEach( proxy -> proxy.exit() );
         System.exit( 0 );
     }
 
     /**
-     * Register Computer with Space.
+     * Register Computer with Space.  
+     * Will override existing key-value pair, if any.
      * @param computer - Remote reference to computer.
      * @throws RemoteException
      */
     @Override
     public void register( Computer computer ) throws RemoteException 
     {
-        // ?? check to see if it already is registered?
         final ComputerProxy computerproxy = new ComputerProxy( computer );
-        computerProxies.add( computerproxy );
+        computerProxies.put( computer, computerproxy );
         computerproxy.start();
         Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, "Computer {0} started.", computerproxy.computerId);
     }
@@ -99,8 +107,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
             catch ( RemoteException ignore )
             {
                 taskQ.add( task );
-                // !! remove this proxy from proxies.
-                Logger.getLogger(SpaceImpl.class.getName()).log(Level.WARNING, "Computer {0} failed.", computerId);
+                computerProxies.remove( computer );
+                Logger.getLogger( SpaceImpl.class.getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
             }   
             return result;
         }
