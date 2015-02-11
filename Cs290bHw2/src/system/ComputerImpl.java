@@ -21,17 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package computer;
+package system;
 import api.*;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
  *
  * @author peter
+ * @param <T> type of Task return value.
  */
-public class ComputerImpl extends UnicastRemoteObject implements Computer
+public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
 {
     public ComputerImpl() throws RemoteException {}
             
@@ -42,16 +43,37 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
      * @throws RemoteException
      */
     @Override
-    public Object execute(Task task) throws RemoteException 
+    public Result<T> execute( Task<T> task ) throws RemoteException 
     { 
-        return task.execute();
+        long startTime = System.nanoTime();
+        T value = task.execute();
+        long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds
+        return new Result<>( value, runTime );
     }
     
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
-        LocateRegistry.createRegistry( Computer.PORT )
-                      .rebind( Computer.SERVICE_NAME, new ComputerImpl() );
+        /**
+         * Its main method gets the domain name of its Space's machine from the command line. 
+         */
+        final String domainName = "localhost";
+        final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
+        Computer2Space space = (Computer2Space) Naming.lookup( url );
+//        Computer2Space space = new SpaceImpl();
+        space.register( new ComputerImpl() );
         System.out.println( "Computer running." );
+        
+        /**
+         * Its main method gets the domain name of its Space's machine from the command line. 
+         * Using Naming.lookup, it gets a remote reference to the Computer2Space service from the rmiregistry.
+        * Registers itself with the Space: Computers do not register themselves into an RmiRegistry.
+         */
+    }
+
+    @Override
+    public void exit() throws RemoteException 
+    {
+        System.exit( 0 );
     }
 }

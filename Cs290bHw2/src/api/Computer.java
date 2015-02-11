@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 package api;
+
 import java.rmi.RemoteException;
 
 /**
@@ -30,9 +31,8 @@ import java.rmi.RemoteException;
  * @param <T> type of the Task return value.
  */
 public interface Computer<T>
-{
-    public static int PORT = 1099;
-    public static String SERVICE_NAME = "Computer";
+{    
+    public Result<T> execute( Task<T> task ) throws RemoteException;
     
-    public T execute( Task<T> task ) throws RemoteException;
+    public void exit() throws RemoteException;
 }

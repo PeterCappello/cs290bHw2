@@ -22,40 +22,27 @@
  * THE SOFTWARE.
  */
 package clients;
-import api.Computer;
-import api.Task;
-import computer.ComputerImpl;
+
+import api.Space;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.rmi.RemoteException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import system.SpaceImpl;
 
 /**
  *
  * @author Peter Cappello
  * @param <T> return type the Task that this Client executes.
  */
-public class Client<T> extends JFrame
-{
-
-    /**
-     *
-     */
-    final protected Task<T> task;
-    final private   Computer<T> computer;
-          protected T taskReturnValue;
-    
-    public Client( final String title, final Task<T> task ) throws RemoteException
+abstract public class Client<T> extends JFrame
+{    
+    public Client( final String title ) throws RemoteException
     {     
-        this.task = task;
         setTitle( title );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        
-        final String domainName = "localhost";
-        final String url = "rmi://" + domainName + ":" + Computer.PORT + "/" + Computer.SERVICE_NAME;
-        computer = new ComputerImpl(); //(Computer) Naming.lookup( url );
     }
     
     public void add( final JLabel jLabel )
@@ -67,13 +54,12 @@ public class Client<T> extends JFrame
         setVisible( true );
     }
     
-    public  T runTask() throws RemoteException
+    public Space getSpace( String domainName ) throws RemoteException
     {
-        computer.execute( task );
-        final long startTime = System.nanoTime();
-        final T value = computer.execute( task );
-        final long runTime = ( System.nanoTime() - startTime ) / 1000000;
-        System.out.println( task + "\n\t runtime: " + runTime + " ms.\n");
-        return value;
+        final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
+        Space space = new SpaceImpl(); //(Computer) Naming.lookup( url );
+        return space;
     }
+    
+    abstract JLabel getLabel( T returnValue );
 }

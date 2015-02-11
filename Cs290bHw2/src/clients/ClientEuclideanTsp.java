@@ -22,6 +22,11 @@
  * THE SOFTWARE.
  */
 package clients;
+
+import api.Computer;
+import api.Result;
+import api.Space;
+import api.Task;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -30,7 +35,11 @@ import java.rmi.RemoteException;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import tasks.TaskEuclideanTsp;
+import applications.euclideantsp.TaskEuclideanTsp;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import system.Computer2Space;
+import system.ComputerImpl;
 
 /**
  *
@@ -55,25 +64,44 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     
     public ClientEuclideanTsp() throws RemoteException
     { 
-        super( "Euclidean TSP", new TaskEuclideanTsp( CITIES ) ); 
+        super( "Euclidean TSP" ); 
     }
     
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
-        final ClientEuclideanTsp client = new ClientEuclideanTsp();
-        final List<Integer> value = client.runTask();
-        client.add( client.getLabel( value.toArray( new Integer[0] ) ) );
+        final Client client = new ClientEuclideanTsp();
+        
+        // get Remote reference to computing system
+        Space space = client.getSpace( "localhost" );
+        Computer2Space computer2space = (Computer2Space) space;
+        Computer computer = new ComputerImpl();
+        computer2space.register( computer );
+        
+        long startTime = System.nanoTime();
+        // decompose problem into subproblem tasks; put tasks in space
+        Task task = new TaskEuclideanTsp( CITIES );
+        space.put( task );
+        
+        // retrieve subproblem solutions; compose subporoblem solutions into to problem solution.
+        
+        Result<List<Integer>> result = space.take();
+        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
+        client.add( client.getLabel( result.getTaskReturnValue() ) );
+        long totalTime = System.nanoTime() - startTime;
+        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
     }
     
-    public JLabel getLabel( final Integer[] tour )
+    @Override
+    public JLabel getLabel( final List<Integer> cityList )
     {
         System.out.print( "Tour: ");
-        for ( int city : tour )
-        {
+        cityList.stream().forEach((city) -> {
             System.out.print( city + " ");
-        }
+        });
         System.out.println( "" );
+        
+        Integer[] tour = cityList.toArray( new Integer[0] );
 
         // display the graph graphically, as it were
         // get minX, maxX, minY, maxY, assuming they 0.0 <= mins
