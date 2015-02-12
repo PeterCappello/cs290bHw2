@@ -34,6 +34,8 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
 {
+    public int numTasks = 0;
+    
     public ComputerImpl() throws RemoteException {}
             
     /**
@@ -45,6 +47,7 @@ public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
     @Override
     public Result<T> execute( Task<T> task ) throws RemoteException 
     { 
+        numTasks++;
         final long startTime = System.nanoTime();
         final T value = task.execute();
         final long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds
@@ -70,5 +73,5 @@ public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
      * @throws RemoteException - always!
      */
     @Override
-    public void exit() throws RemoteException { System.exit( 0 ); }
+    public void exit() throws RemoteException { System.out.println("Computer # tasks complete:" + numTasks ); /*System.exit( 0 ); */ }
 }

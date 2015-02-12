@@ -23,11 +23,9 @@
  */
 package clients;
 
-import api.Computer;
 import api.Result;
 import api.Space;
 import api.Task;
-import applications.euclideantsp.ResultEuclideanTsp;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -64,7 +62,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
 //        { 6, 6 }
 //    };
     
-    private static final double[][] CITIES =
+    public static final double[][] CITIES =
     {
 	{ 1, 1 },
 	{ 8, 1 },
@@ -93,8 +91,11 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         // get Remote reference to computing system
         Space space = client.getSpace( "localhost" );
         Computer2Space computer2space = (Computer2Space) space;
-        Computer computer = new ComputerImpl();
-        computer2space.register( computer );
+        computer2space.register( new ComputerImpl() );
+        computer2space.register( new ComputerImpl() );
+        computer2space.register( new ComputerImpl() );
+        computer2space.register( new ComputerImpl() );
+        System.out.println("# cores: " + Runtime.getRuntime().availableProcessors());
         
         long startTime = System.nanoTime();
         // decompose problem into subproblem tasks.
@@ -134,12 +135,12 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         client.add( client.getLabel( shortestTour ) );
         long totalTime = System.nanoTime() - startTime;
         Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
+//        space.exit();
     }
     
     @Override
     public List<Task> decompose()
     {
-        TaskEuclideanTsp.setCities( CITIES );
         final List<Task> tasks = new LinkedList<>();
         final List<Integer> ints = new LinkedList<>();
         for ( int i = 1; i < CITIES.length; i++ )

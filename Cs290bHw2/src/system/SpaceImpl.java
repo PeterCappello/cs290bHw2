@@ -39,14 +39,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @param task
      */
     @Override
-    public void put(Task task) { taskQ.add( task ); }
+    synchronized public void put(Task task) { taskQ.add( task ); }
 
     /**
      * Take a Result from the Result queue.
      * @return a Result object.
      */
     @Override
-    public Result take() 
+    synchronized public Result take() 
     {
         try 
         {
@@ -74,7 +74,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @throws RemoteException
      */
     @Override
-    public void register( Computer computer ) throws RemoteException 
+    synchronized public void register( Computer computer ) throws RemoteException 
     {
         final ComputerProxy computerproxy = new ComputerProxy( computer );
         computerProxies.put( computer, computerproxy );
@@ -102,6 +102,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
             Result result = null;
             try
             {
+                System.out.println("Computer " + computerId + " being sent task: " + task );
                 result = computer.execute( task );
             }
             catch ( RemoteException ignore )

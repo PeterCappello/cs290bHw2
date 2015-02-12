@@ -24,8 +24,13 @@
 package applications.euclideantsp;
 
 import api.Task;
+import clients.ClientEuclideanTsp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import org.paukov.combinatorics.Factory;
+import org.paukov.combinatorics.Generator;
+import org.paukov.combinatorics.ICombinatoricsVector;
 
 /**
  *
@@ -35,13 +40,13 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
 {
     final static Integer ONE = 1;
     final static Integer TWO = 2;
-    static private double[][] CITIES;
+    final static private double[][] CITIES = ClientEuclideanTsp.CITIES;
     
     final private int secondCity;
     final private List<Integer> partialCityList;
     
 //    public TaskEuclideanTsp( double[][] CITIES ) { this.CITIES = CITIES; }
-    public static void setCities( double[][] cities ) { TaskEuclideanTsp.CITIES = cities; }
+//    public static void setCities( double[][] cities ) { TaskEuclideanTsp.CITIES = cities; }
     
     public TaskEuclideanTsp( int secondCity, List<Integer> partialCityList )
     {
@@ -49,33 +54,39 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         this.partialCityList = partialCityList;
     }
     
+    /**
+     * Produce a tour of minimum cost.
+     * Uses combinatoricslib-2.1 library to generate permutations. See
+     * @return a tour of minimum cost.
+     */
     @Override
     public List<Integer> execute() 
     {
-//        final int TOUR_SIZE = CITIES.length;
-//        List<Integer> intList = new ArrayList<>();
-//        for ( int i = 1; i < TOUR_SIZE; i++ )
-//        {
-//            intList.add( i );
-//        }
-        
-        //  tours = permutations[1, n - 1], where p in tours ==> reverse(p) not in tours.
-        List<List<Integer>> tours = enumeratePermutations( partialCityList );
-        
-        // cyclic permutations[0, n - 1], again omitting reverse permutations.
-        tours.stream().forEach( tour -> { tour.add( 0, secondCity ); tour.add( 0, 0 );} );
-
-        List<Integer> shortestTour = tours.get( 0 );
+        // initial value for shortestTour and its distance.
+        List<Integer> shortestTour = addPrefix( new LinkedList<>( partialCityList ) );
         double shortestTourDistance = tourDistance( CITIES, shortestTour );
-        for ( List<Integer> tour : tours )
+        
+        // Use Combinatoricslib-2.1 to generate tour suffixes
+        ICombinatoricsVector<Integer> initialVector = Factory.createVector( partialCityList );
+        Generator<Integer> generator = Factory.createPermutationGenerator(initialVector);
+        for ( ICombinatoricsVector<Integer> tourSuffix : generator ) 
         {
-            if ( tourDistance( CITIES, tour ) < shortestTourDistance )
+           List<Integer> tour = addPrefix( tourSuffix.getVector() );
+           double tourDistance = tourDistance( CITIES, tour );
+           if ( tourDistance < shortestTourDistance )
             {
                 shortestTour = tour;
-                shortestTourDistance = tourDistance( CITIES, tour );
+                shortestTourDistance = tourDistance;
             }
         }
         return shortestTour;
+    }
+    
+    private List<Integer> addPrefix( List<Integer> partialTour )
+    {
+        partialTour.add( 0, secondCity );
+        partialTour.add( 0, 0 );
+        return partialTour;
     }
     
     @Override
@@ -83,94 +94,16 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
     {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append( getClass() );
-        stringBuilder.append( "\n\tCities:\n\t" );
+        stringBuilder.append( "\n\tCities: " );
         stringBuilder.append( 0 ).append( " " );
         stringBuilder.append( secondCity ).append( " " );
-        for ( Integer partialCityList1 : partialCityList ) 
+        partialCityList.stream().forEach(( city ) -> 
         {
-            stringBuilder.append(partialCityList1).append( " " );
-        }
+            stringBuilder.append( city ).append( " " );
+        } );
         return stringBuilder.toString();
     }
-    
-//    @Override
-//    public String toString()
-//    {
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append( getClass() );
-//        stringBuilder.append( "\n\tCities:\n\t" );
-//        stringBuilder.append( 0 ).append( ": ");
-//        stringBuilder.append(CITIES[ 0 ][ 0 ] ).append(' ');
-//        stringBuilder.append(CITIES[ 0 ][ 1 ] ).append("\n\t");
-//        stringBuilder.append( secondCity ).append( ": ");
-//        stringBuilder.append(CITIES[ secondCity ][ 0 ] ).append(' ');
-//        stringBuilder.append(CITIES[ secondCity ][ 1 ] ).append("\n\t");
-//        for ( int city = 0; city < partialCityList.size(); city++ )
-//        {
-//            stringBuilder.append( city ).append( ": ");
-//            stringBuilder.append(CITIES[ city ][ 0 ] ).append(' ');
-//            stringBuilder.append(CITIES[ city ][ 1 ] ).append("\n\t");
-//        }
-//        return stringBuilder.toString();
-//    }
-    
-//    @Override
-//    public String toString()
-//    {
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append( getClass() );
-//        stringBuilder.append( "\n\tCities:\n\t" );
-//        for ( int city = 0; city < CITIES.length; city++ )
-//        {
-//            stringBuilder.append( city ).append( ": ");
-//            stringBuilder.append( CITIES[ city ][ 0 ] ).append(' ');
-//            stringBuilder.append( CITIES[ city ][ 1 ] ).append("\n\t");
-//        }
-//        return stringBuilder.toString();
-//    }
-    
-   private static List<List<Integer>> enumeratePermutations( List<Integer> numberList )
-   {
-       List<List<Integer>> permutationList = new ArrayList<>();
-       
-        // Base case
-        if( numberList.isEmpty() )
-        {
-            permutationList.add( new ArrayList<>() );
-            return permutationList;
-        }
-        
-        // Inductive case
-        //  1. create subproblem
-        final Integer n = numberList.remove( 0 );
-        
-        //  2. solve subproblem
-        final List<List<Integer>> subPermutationList = enumeratePermutations( numberList );
-        
-        //  3. solve problem using subproblem solution
-        subPermutationList.stream().forEach(subPermutation -> 
-        {            
-            //  if p is a cyclic permutation, omit reverse(p): 1 always occurs before 2 in p.
-            if ( ! n.equals( ONE ) )
-                for( int index = 0; index <= subPermutation.size(); index++ )
-                    permutationList.add( addElement( subPermutation, index, n ) );
-            else if ( subPermutation.contains( TWO ) )
-               for( int index = 0; index < subPermutation.indexOf( TWO ); index++ )
-                    permutationList.add( addElement( subPermutation, index, n ) );
-            else 
-                for( int index = 0; index <= subPermutation.size(); index++ )
-                    permutationList.add( addElement( subPermutation, index, n ) );
-        });   
-        return permutationList;
-    }
-   
-   private static List<Integer> addElement( final List<Integer> subPermutation, final int index, final Integer n )
-   {
-        List<Integer> permutation = new ArrayList<>( subPermutation );
-        permutation.add( index, n );
-        return permutation;
-   }
-   
+
    public static double tourDistance( final double[][] cities, final List<Integer> tour )
    {
        double cost = 0.0;
@@ -186,14 +119,5 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
        final double deltaX = city1[ 0 ] - city2[ 0 ];
        final double deltaY = city1[ 1 ] - city2[ 1 ];
        return Math.sqrt( deltaX * deltaX + deltaY * deltaY );
-   }
-   
-   private void printPermutations( final List<List<Integer>> permutations )
-   {
-       int num = 0;
-       for ( List<Integer> permutation : permutations )
-       {
-           System.out.println( ++num + ": " + permutation + " tourDistance: " + tourDistance( CITIES, permutation ) );
-       }
    }
 }
