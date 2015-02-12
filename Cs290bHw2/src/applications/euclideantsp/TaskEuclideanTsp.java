@@ -25,7 +25,6 @@ package applications.euclideantsp;
 
 import api.Task;
 import clients.ClientEuclideanTsp;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.paukov.combinatorics.Factory;
@@ -33,21 +32,19 @@ import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
 
 /**
- *
+ * Find a tour of minimum cost among those that start with city 0, 
+ * followed by city secondCity.
  * @author Peter Cappello
  */
 public class TaskEuclideanTsp implements Task<List<Integer>>
 {
+    final static private double[][] CITIES = ClientEuclideanTsp.CITIES;
     final static Integer ONE = 1;
     final static Integer TWO = 2;
-    final static private double[][] CITIES = ClientEuclideanTsp.CITIES;
     
     final private int secondCity;
     final private List<Integer> partialCityList;
-    
-//    public TaskEuclideanTsp( double[][] CITIES ) { this.CITIES = CITIES; }
-//    public static void setCities( double[][] cities ) { TaskEuclideanTsp.CITIES = cities; }
-    
+        
     public TaskEuclideanTsp( int secondCity, List<Integer> partialCityList )
     {
         this.secondCity = secondCity;
@@ -72,6 +69,10 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         for ( ICombinatoricsVector<Integer> tourSuffix : generator ) 
         {
            List<Integer> tour = addPrefix( tourSuffix.getVector() );
+           if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
+           {
+               continue; // skip tour; it is the reverse of another.
+           }
            double tourDistance = tourDistance( CITIES, tour );
            if ( tourDistance < shortestTourDistance )
             {

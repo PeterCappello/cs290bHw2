@@ -93,8 +93,8 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         Computer2Space computer2space = (Computer2Space) space;
         computer2space.register( new ComputerImpl() );
         computer2space.register( new ComputerImpl() );
-        computer2space.register( new ComputerImpl() );
-        computer2space.register( new ComputerImpl() );
+//        computer2space.register( new ComputerImpl() );
+//        computer2space.register( new ComputerImpl() );
         System.out.println("# cores: " + Runtime.getRuntime().availableProcessors());
         
         long startTime = System.nanoTime();
