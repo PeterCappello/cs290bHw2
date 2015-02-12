@@ -24,9 +24,11 @@
 package clients;
 
 import api.Space;
+import api.Task;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.rmi.RemoteException;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -62,4 +64,6 @@ abstract public class Client<T> extends JFrame
     }
     
     abstract JLabel getLabel( T returnValue );
+    
+    abstract List<Task> decompose();
 }

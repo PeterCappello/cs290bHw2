@@ -88,6 +88,12 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
         Logger.getLogger( ClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
     }
     
+    
+    @Override
+    List<Task> decompose() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public JLabel getLabel( Integer[][] counts )
     {

@@ -39,7 +39,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @param task
      */
     @Override
-    public void put(Task task) { taskQ.add(task); }
+    public void put(Task task) { taskQ.add( task ); }
 
     /**
      * Take a Result from the Result queue.

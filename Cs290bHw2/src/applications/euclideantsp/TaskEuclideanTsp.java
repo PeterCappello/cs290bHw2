@@ -15,7 +15,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR ONE PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -35,35 +35,44 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
 {
     final static Integer ONE = 1;
     final static Integer TWO = 2;
+    static private double[][] CITIES;
     
-    final private double[][] cities;
+    final private int secondCity;
+    final private List<Integer> partialCityList;
     
-    public TaskEuclideanTsp( double[][] cities ) { this.cities = cities; }
+//    public TaskEuclideanTsp( double[][] CITIES ) { this.CITIES = CITIES; }
+    public static void setCities( double[][] cities ) { TaskEuclideanTsp.CITIES = cities; }
+    
+    public TaskEuclideanTsp( int secondCity, List<Integer> partialCityList )
+    {
+        this.secondCity = secondCity;
+        this.partialCityList = partialCityList;
+    }
     
     @Override
     public List<Integer> execute() 
     {
-        final int TOUR_SIZE = cities.length;
-        List<Integer> intList = new ArrayList<>();
-        for ( int i = 1; i < TOUR_SIZE; i++ )
-        {
-            intList.add( i );
-        }
+//        final int TOUR_SIZE = CITIES.length;
+//        List<Integer> intList = new ArrayList<>();
+//        for ( int i = 1; i < TOUR_SIZE; i++ )
+//        {
+//            intList.add( i );
+//        }
         
         //  tours = permutations[1, n - 1], where p in tours ==> reverse(p) not in tours.
-        List<List<Integer>> tours = enumeratePermutations( intList );
+        List<List<Integer>> tours = enumeratePermutations( partialCityList );
         
         // cyclic permutations[0, n - 1], again omitting reverse permutations.
-        tours.stream().forEach( tour -> { tour.add( 0, 0 ); } );
+        tours.stream().forEach( tour -> { tour.add( 0, secondCity ); tour.add( 0, 0 );} );
 
         List<Integer> shortestTour = tours.get( 0 );
-        double shortestTourDistance = tourDistance( shortestTour );
+        double shortestTourDistance = tourDistance( CITIES, shortestTour );
         for ( List<Integer> tour : tours )
         {
-            if ( tourDistance( tour ) < shortestTourDistance )
+            if ( tourDistance( CITIES, tour ) < shortestTourDistance )
             {
                 shortestTour = tour;
-                shortestTourDistance = tourDistance( tour );
+                shortestTourDistance = tourDistance( CITIES, tour );
             }
         }
         return shortestTour;
@@ -75,14 +84,50 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append( getClass() );
         stringBuilder.append( "\n\tCities:\n\t" );
-        for ( int city = 0; city < cities.length; city++ )
+        stringBuilder.append( 0 ).append( " " );
+        stringBuilder.append( secondCity ).append( " " );
+        for ( Integer partialCityList1 : partialCityList ) 
         {
-            stringBuilder.append( city ).append( ": ");
-            stringBuilder.append( cities[ city ][ 0 ] ).append(' ');
-            stringBuilder.append( cities[ city ][ 1 ] ).append("\n\t");
+            stringBuilder.append(partialCityList1).append( " " );
         }
         return stringBuilder.toString();
     }
+    
+//    @Override
+//    public String toString()
+//    {
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append( getClass() );
+//        stringBuilder.append( "\n\tCities:\n\t" );
+//        stringBuilder.append( 0 ).append( ": ");
+//        stringBuilder.append(CITIES[ 0 ][ 0 ] ).append(' ');
+//        stringBuilder.append(CITIES[ 0 ][ 1 ] ).append("\n\t");
+//        stringBuilder.append( secondCity ).append( ": ");
+//        stringBuilder.append(CITIES[ secondCity ][ 0 ] ).append(' ');
+//        stringBuilder.append(CITIES[ secondCity ][ 1 ] ).append("\n\t");
+//        for ( int city = 0; city < partialCityList.size(); city++ )
+//        {
+//            stringBuilder.append( city ).append( ": ");
+//            stringBuilder.append(CITIES[ city ][ 0 ] ).append(' ');
+//            stringBuilder.append(CITIES[ city ][ 1 ] ).append("\n\t");
+//        }
+//        return stringBuilder.toString();
+//    }
+    
+//    @Override
+//    public String toString()
+//    {
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append( getClass() );
+//        stringBuilder.append( "\n\tCities:\n\t" );
+//        for ( int city = 0; city < CITIES.length; city++ )
+//        {
+//            stringBuilder.append( city ).append( ": ");
+//            stringBuilder.append( CITIES[ city ][ 0 ] ).append(' ');
+//            stringBuilder.append( CITIES[ city ][ 1 ] ).append("\n\t");
+//        }
+//        return stringBuilder.toString();
+//    }
     
    private static List<List<Integer>> enumeratePermutations( List<Integer> numberList )
    {
@@ -103,14 +148,17 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         final List<List<Integer>> subPermutationList = enumeratePermutations( numberList );
         
         //  3. solve problem using subproblem solution
-        subPermutationList.stream().forEach( subPermutation -> 
+        subPermutationList.stream().forEach(subPermutation -> 
         {            
             //  if p is a cyclic permutation, omit reverse(p): 1 always occurs before 2 in p.
             if ( ! n.equals( ONE ) )
                 for( int index = 0; index <= subPermutation.size(); index++ )
                     permutationList.add( addElement( subPermutation, index, n ) );
-            else 
+            else if ( subPermutation.contains( TWO ) )
                for( int index = 0; index < subPermutation.indexOf( TWO ); index++ )
+                    permutationList.add( addElement( subPermutation, index, n ) );
+            else 
+                for( int index = 0; index <= subPermutation.size(); index++ )
                     permutationList.add( addElement( subPermutation, index, n ) );
         });   
         return permutationList;
@@ -123,7 +171,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         return permutation;
    }
    
-   private double tourDistance( final List<Integer> tour )
+   public static double tourDistance( final double[][] cities, final List<Integer> tour )
    {
        double cost = 0.0;
        for ( int city = 0; city < tour.size() - 1; city ++ )
@@ -145,7 +193,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
        int num = 0;
        for ( List<Integer> permutation : permutations )
        {
-           System.out.println( ++num + ": " + permutation + " tourDistance: " + tourDistance( permutation ) );
+           System.out.println( ++num + ": " + permutation + " tourDistance: " + tourDistance( CITIES, permutation ) );
        }
    }
 }

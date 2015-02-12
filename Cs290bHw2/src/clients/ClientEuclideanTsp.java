@@ -27,6 +27,7 @@ import api.Computer;
 import api.Result;
 import api.Space;
 import api.Task;
+import applications.euclideantsp.ResultEuclideanTsp;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -36,6 +37,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import applications.euclideantsp.TaskEuclideanTsp;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import system.Computer2Space;
@@ -48,18 +50,34 @@ import system.ComputerImpl;
 public class ClientEuclideanTsp extends Client<List<Integer>>
 {
     private static final int NUM_PIXALS = 600;
-    private static final double[][] CITIES = 
+//    private static final double[][] CITIES = 
+//    {
+//        { 6, 3 },
+//        { 2, 2 },
+//        { 5, 8 },
+//        { 1, 5 },
+//        { 1, 6 },
+//        { 2, 7 },
+//        { 2, 8 },
+//        { 6, 5 },
+//        { 1, 3 },
+//        { 6, 6 }
+//    };
+    
+    private static final double[][] CITIES =
     {
-        { 6, 3 },
-        { 2, 2 },
-        { 5, 8 },
-        { 1, 5 },
-        { 1, 6 },
-        { 2, 7 },
-        { 2, 8 },
-        { 6, 5 },
-        { 1, 3 },
-        { 6, 6 }
+	{ 1, 1 },
+	{ 8, 1 },
+	{ 8, 8 },
+	{ 1, 8 },
+	{ 2, 2 },
+	{ 7, 2 },
+	{ 7, 7 },
+	{ 2, 7 },
+	{ 3, 3 },
+	{ 6, 3 },
+	{ 6, 6 },
+	{ 3, 6 }
     };
     
     public ClientEuclideanTsp() throws RemoteException
@@ -79,17 +97,64 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         computer2space.register( computer );
         
         long startTime = System.nanoTime();
-        // decompose problem into subproblem tasks; put tasks in space
-        Task task = new TaskEuclideanTsp( CITIES );
-        space.put( task );
+        // decompose problem into subproblem tasks.
+        List<Task> tasks = client.decompose();
+        
+        // put tasks in space.
+        for (Task task : tasks) 
+        {
+            space.put( task );
+        }
+        
+        // collect results
+        List<Result<List<Integer>>> results = new LinkedList<>();
+        for (Task task : tasks) 
+        {
+            results.add( ( Result<List<Integer>> ) space.take() );
+        }
+        
+        // compose solution from results
+        List<Integer> shortestTour = results.get( 0 ).getTaskReturnValue();
+        double shortestTourDistance = TaskEuclideanTsp.tourDistance( CITIES, shortestTour );
+        for ( Result<List<Integer>> result : results )
+        {
+            double tourDistance = TaskEuclideanTsp.tourDistance( CITIES, result.getTaskReturnValue() );
+            if ( tourDistance < shortestTourDistance )
+            {
+                shortestTour = result.getTaskReturnValue();
+                shortestTourDistance = tourDistance;
+            }
+        }
+//        return shortestTour;
         
         // retrieve subproblem solutions; compose subporoblem solutions into to problem solution.
         
-        Result<List<Integer>> result = space.take();
-        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
-        client.add( client.getLabel( result.getTaskReturnValue() ) );
+//        Result<List<Integer>> result = space.take();
+//        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "C time: {0} ms.", result.getTaskRunTime() );
+        client.add( client.getLabel( shortestTour ) );
         long totalTime = System.nanoTime() - startTime;
         Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
+    }
+    
+    @Override
+    public List<Task> decompose()
+    {
+        TaskEuclideanTsp.setCities( CITIES );
+        final List<Task> tasks = new LinkedList<>();
+        final List<Integer> ints = new LinkedList<>();
+        for ( int i = 1; i < CITIES.length; i++ )
+        {
+            ints.add( i );
+        }
+        for ( int i = 1; i <= ints.size(); i++ )
+        {
+            final List<Integer> partialList = new LinkedList<>( ints );
+            partialList.remove( i - 1 );
+            final Task task = new TaskEuclideanTsp( i, partialList );
+//            System.out.println("Task: " + task );
+            tasks.add( task );
+        }
+        return tasks;
     }
     
     @Override
