@@ -102,7 +102,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
             Result result = null;
             try
             {
-                System.out.println("Computer " + computerId + " being sent task: " + task );
+//                System.out.println("Computer " + computerId + " being sent task: " + task );
                 result = computer.execute( task );
             }
             catch ( RemoteException ignore )

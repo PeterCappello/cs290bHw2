@@ -93,12 +93,11 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         Computer2Space computer2space = (Computer2Space) space;
         computer2space.register( new ComputerImpl() );
         computer2space.register( new ComputerImpl() );
-//        computer2space.register( new ComputerImpl() );
-//        computer2space.register( new ComputerImpl() );
+        computer2space.register( new ComputerImpl() );
+        computer2space.register( new ComputerImpl() );
         System.out.println("# cores: " + Runtime.getRuntime().availableProcessors());
         
         long startTime = System.nanoTime();
-        // decompose problem into subproblem tasks.
         List<Task> tasks = client.decompose();
         
         // put tasks in space.
@@ -107,18 +106,13 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
             space.put( task );
         }
         
-        // collect results
-        List<Result<List<Integer>>> results = new LinkedList<>();
+        // collect results; compose solution
+        List<Integer> shortestTour = new LinkedList<>();
+        double shortestTourDistance = Double.MAX_VALUE;
         for (Task task : tasks) 
         {
-            results.add( ( Result<List<Integer>> ) space.take() );
-        }
-        
-        // compose solution from results
-        List<Integer> shortestTour = results.get( 0 ).getTaskReturnValue();
-        double shortestTourDistance = TaskEuclideanTsp.tourDistance( CITIES, shortestTour );
-        for ( Result<List<Integer>> result : results )
-        {
+            Result<List<Integer>> result = space.take();
+            Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
             double tourDistance = TaskEuclideanTsp.tourDistance( CITIES, result.getTaskReturnValue() );
             if ( tourDistance < shortestTourDistance )
             {
@@ -126,16 +120,10 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
                 shortestTourDistance = tourDistance;
             }
         }
-//        return shortestTour;
         
-        // retrieve subproblem solutions; compose subporoblem solutions into to problem solution.
-        
-//        Result<List<Integer>> result = space.take();
-//        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "C time: {0} ms.", result.getTaskRunTime() );
         client.add( client.getLabel( shortestTour ) );
         long totalTime = System.nanoTime() - startTime;
         Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
-//        space.exit();
     }
     
     @Override
@@ -152,7 +140,6 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
             final List<Integer> partialList = new LinkedList<>( ints );
             partialList.remove( i - 1 );
             final Task task = new TaskEuclideanTsp( i, partialList );
-//            System.out.println("Task: " + task );
             tasks.add( task );
         }
         return tasks;

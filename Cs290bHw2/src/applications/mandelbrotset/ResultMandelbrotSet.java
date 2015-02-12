@@ -10,9 +10,9 @@ import api.Result;
  * Result container for TaskMandelbrotSet.
  * @author peter
  */
-public class ResultMandelbrotSet extends Result<Integer[][]>
+public class ResultMandelbrotSet extends Result<ResultValueMandelbrotSet>
 {
-    public ResultMandelbrotSet( Integer[][] taskReturnValue, long taskRunTime ) 
+    public ResultMandelbrotSet( ResultValueMandelbrotSet taskReturnValue, long taskRunTime ) 
     {
         super(taskReturnValue, taskRunTime);
     }

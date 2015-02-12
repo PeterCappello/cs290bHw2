@@ -28,21 +28,25 @@ import api.Task;
  *
  * @author Peter Cappello
  */
-public class TaskMandelbrotSet implements Task<Integer[][]>
+public class TaskMandelbrotSet implements Task<ResultValueMandelbrotSet>
 {
     final private double lowerLeftX;
     final private double lowerLeftY;
     final private double edgeLength;
     final private int numPixels;
     final private int iterationLimit;
+    final private int blockRow;
+    final private int blockCol;
             
-    public TaskMandelbrotSet( double lowerLeftX, double lowerLeftY, double edgeLength, int numPixels, int iterationLimit )
+    public TaskMandelbrotSet( double lowerLeftX, double lowerLeftY, double edgeLength, int numPixels, int iterationLimit, int blockRow, int blockCol )
     {
         this.lowerLeftX = lowerLeftX;
         this.lowerLeftY = lowerLeftY;
         this.edgeLength = edgeLength;
         this.numPixels = numPixels;
         this.iterationLimit = iterationLimit;
+        this.blockRow = blockRow;
+        this.blockCol = blockCol;
     }
     
     /**
@@ -51,7 +55,7 @@ public class TaskMandelbrotSet implements Task<Integer[][]>
      * col correspond to regions in the complex plane.
      */
     @Override
-    public Integer[][] execute() 
+    public ResultValueMandelbrotSet execute() 
     {
         final Integer[][] counts = new Integer[numPixels][numPixels];
         final double delta = edgeLength / numPixels;
@@ -60,14 +64,14 @@ public class TaskMandelbrotSet implements Task<Integer[][]>
             {
                 counts[row][col] = getIterationCount( row, col, delta );
             }
-        return counts;
+        return new ResultValueMandelbrotSet( counts,blockRow, blockCol );
     }
     
     @Override
     public String toString()
     {
-        return String.format( "%s \n\t x: %e \n\t y: %e \n\t length: %e \n\t pixels: %d \n\t iteration limit: %d\n", 
-                getClass(), lowerLeftX, lowerLeftY, edgeLength, numPixels, iterationLimit );
+        return String.format( "%s \n\t x: %e \n\t y: %e \n\t length: %e \n\t pixels: %d \n\t iteration limit: %d \n\t blockRow: %d \n\t blockCol: %d\n", 
+                getClass(), lowerLeftX, lowerLeftY, edgeLength, numPixels, iterationLimit, blockRow, blockCol );
     }
     
     private int getIterationCount( int row, int col, double delta )

@@ -22,11 +22,11 @@
  * THE SOFTWARE.
  */
 package clients;
-import api.Computer;
 import api.Result;
 import api.Space;
 import api.Task;
-import applications.euclideantsp.TaskEuclideanTsp;
+import applications.mandelbrotset.ResultValueMandelbrotSet;
+import applications.mandelbrotset.TaskMandelbrotSet;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -34,7 +34,7 @@ import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import applications.mandelbrotset.TaskMandelbrotSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,11 +47,12 @@ import system.ComputerImpl;
  */
 public class ClientMandelbrotSet extends Client<Integer[][]>
 {
-    public static final double LOWER_LEFT_X = -2.0;
-    public static final double LOWER_LEFT_Y = -2.0;
-    public static final double EDGE_LENGTH = 4.0;
-    public static final int N_PIXELS = 256;
-    public static final int ITERATION_LIMIT = 64;
+    public static final double LOWER_LEFT_X = -0.7510975859375;
+    public static final double LOWER_LEFT_Y = 0.1315680625;
+    public static final double EDGE_LENGTH = 0.01611;
+    public static final int N_PIXELS = 1024;
+    public static final int ITERATION_LIMIT = 512;
+    public static final int BLOCK_SIZE = 256;
     
     public ClientMandelbrotSet() throws RemoteException 
     { 
@@ -71,27 +72,60 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
         // get Remote reference to computing system
         Space space = client.getSpace( "localhost" );
         Computer2Space computer2space = (Computer2Space) space;
-        Computer computer = new ComputerImpl();
-        computer2space.register( computer );
+        computer2space.register( new ComputerImpl() );
+        computer2space.register( new ComputerImpl() );
+//        computer2space.register( new ComputerImpl() );
+//        computer2space.register( new ComputerImpl() );
+        System.out.println("# cores: " + Runtime.getRuntime().availableProcessors());
         
         long startTime = System.nanoTime();
-        // decompose problem into subproblem tasks; put tasks in space
-        Task task = new TaskMandelbrotSet( LOWER_LEFT_X, LOWER_LEFT_Y, EDGE_LENGTH, N_PIXELS, ITERATION_LIMIT );
-        space.put( task );
+        List<Task> tasks = client.decompose();
         
-        // retrieve subproblem solutions; compose subporoblem solutions into to problem solution.
+        // put tasks in space.
+        for (Task task : tasks) 
+        {
+            space.put( task );
+        }
         
-        Result<Integer[][]> result = space.take();
-        Logger.getLogger( ClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
-        client.add( client.getLabel( result.getTaskReturnValue() ) );
+        // collect results; compose solution
+        Integer[][] counts = new Integer[N_PIXELS][N_PIXELS];
+        for (Task task : tasks) 
+        {
+            final Result<ResultValueMandelbrotSet> result = ( Result<ResultValueMandelbrotSet> ) space.take();
+            final ResultValueMandelbrotSet resultValue = result.getTaskReturnValue();
+            
+            // copy blockCounts into counts array
+            Integer[][] blockCounts = resultValue.counts();
+            int blockRow = resultValue.blockRow();
+            int blockCol = resultValue.blockCol();
+            for ( int row = 0; row < BLOCK_SIZE; row++ )
+            {
+                System.arraycopy( blockCounts[row], 0, counts[blockRow * BLOCK_SIZE + row], blockCol * BLOCK_SIZE, BLOCK_SIZE );
+            }
+            Logger.getLogger( ClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
+        }
+        client.add( client.getLabel( counts ) );
         long totalTime = System.nanoTime() - startTime;
         Logger.getLogger( ClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
     }
     
-    
     @Override
-    List<Task> decompose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    List<Task> decompose() 
+    {
+        final List<Task> tasks = new LinkedList<>();
+        final int numBlocks = N_PIXELS / BLOCK_SIZE;
+        double edgeLength = EDGE_LENGTH / numBlocks;
+        for ( int blockRow = 0; blockRow < numBlocks; blockRow++ )
+        {
+            for ( int blockCol = 0; blockCol < numBlocks; blockCol++ )
+            {
+                final double lowerLeftX = LOWER_LEFT_X + edgeLength * blockRow;
+                final double lowerLeftY = LOWER_LEFT_Y + edgeLength * blockCol ;
+                Task task = new TaskMandelbrotSet( lowerLeftX, lowerLeftY, edgeLength , BLOCK_SIZE, ITERATION_LIMIT, blockRow, blockCol );
+                tasks.add( task );
+            }
+        }
+        return tasks;
     }
     
     @Override
