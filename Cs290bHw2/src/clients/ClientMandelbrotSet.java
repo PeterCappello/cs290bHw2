@@ -38,8 +38,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import system.Computer2Space;
-import system.ComputerImpl;
 
 /**
  *
@@ -67,8 +65,8 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
     public static void main( String[] args ) throws Exception
     {  
         System.setSecurityManager( new SecurityManager() );
-        long startTime = System.nanoTime();
         final Client client = new ClientMandelbrotSet();
+        client.begin();
         Space space = client.getSpace( 2 );
         List<Task> tasks = client.decompose();
         for ( Task task : tasks ) { space.put( task ); }
@@ -93,8 +91,7 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
         
         // display solution
         client.add( client.getLabel( counts ) );
-        long totalTime = System.nanoTime() - startTime;
-        Logger.getLogger( ClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
+        client.end();
     }
     
     @Override

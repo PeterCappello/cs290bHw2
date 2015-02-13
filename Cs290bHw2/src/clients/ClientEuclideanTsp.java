@@ -38,8 +38,6 @@ import applications.euclideantsp.TaskEuclideanTsp;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import system.Computer2Space;
-import system.ComputerImpl;
 
 /**
  *
@@ -48,20 +46,6 @@ import system.ComputerImpl;
 public class ClientEuclideanTsp extends Client<List<Integer>>
 {
     private static final int NUM_PIXALS = 600;
-//    private static final double[][] CITIES = 
-//    {
-//        { 6, 3 },
-//        { 2, 2 },
-//        { 5, 8 },
-//        { 1, 5 },
-//        { 1, 6 },
-//        { 2, 7 },
-//        { 2, 8 },
-//        { 6, 5 },
-//        { 1, 3 },
-//        { 6, 6 }
-//    };
-    
     public static final double[][] CITIES =
     {
 	{ 1, 1 },
@@ -86,9 +70,8 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
-        long startTime = System.nanoTime();
         final Client client = new ClientEuclideanTsp();
-        
+        client.begin();
         Space space = client.getSpace( 2 );
         List<Task> tasks = client.decompose();
         for (Task task : tasks) space.put( task );
@@ -110,8 +93,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         
         // display solution
         client.add( client.getLabel( shortestTour ) );
-        long totalTime = System.nanoTime() - startTime;
-        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
+        client.end();
     }
     
     @Override
@@ -136,12 +118,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     @Override
     public JLabel getLabel( final List<Integer> cityList )
     {
-        System.out.print( "Tour: ");
-        cityList.stream().forEach((city) -> {
-            System.out.print( city + " ");
-        });
-        System.out.println( "" );
-        
+        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
         Integer[] tour = cityList.toArray( new Integer[0] );
 
         // display the graph graphically, as it were
@@ -207,5 +184,15 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         }
         final ImageIcon imageIcon = new ImageIcon( image );
         return new JLabel( imageIcon );
+    }
+    
+    private String tourToString( List<Integer> cityList )
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append( "Tour: " );
+        cityList.stream().forEach((city) -> {
+            stringBuilder.append( city ).append( ' ' );
+        });
+        return stringBuilder.toString();
     }
 }

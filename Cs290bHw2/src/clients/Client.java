@@ -32,10 +32,11 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import system.Computer2Space;
 import system.ComputerImpl;
 import system.SpaceImpl;
 
@@ -46,10 +47,19 @@ import system.SpaceImpl;
  */
 abstract public class Client<T> extends JFrame
 {    
+    private long startTime; 
+    
     public Client( final String title ) throws RemoteException
     {     
         setTitle( title );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+    }
+    
+    public void begin() { startTime = System.nanoTime(); }
+    
+    public void end() 
+    { 
+        Logger.getLogger( Client.class.getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", (System.nanoTime() - startTime) / 1000000 );
     }
     
     public void add( final JLabel jLabel )
