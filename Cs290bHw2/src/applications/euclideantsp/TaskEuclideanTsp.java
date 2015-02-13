@@ -37,7 +37,7 @@ import org.paukov.combinatorics.ICombinatoricsVector;
  * @author Peter Cappello
  */
 public class TaskEuclideanTsp implements Task<List<Integer>>
-{
+{ 
     final static private double[][] CITIES = ClientEuclideanTsp.CITIES;
     final static Integer ONE = 1;
     final static Integer TWO = 2;
@@ -53,7 +53,8 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
     
     /**
      * Produce a tour of minimum cost.
-     * Uses combinatoricslib-2.1 library to generate permutations. See
+     * Uses combinatoricslib-2.1 library to generate permutations. 
+     * See https://code.google.com/p/combinatoricslib/.
      * @return a tour of minimum cost.
      */
     @Override
@@ -68,7 +69,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         Generator<Integer> generator = Factory.createPermutationGenerator(initialVector);
         for ( ICombinatoricsVector<Integer> tourSuffix : generator ) 
         {
-           List<Integer> tour = addPrefix( tourSuffix.getVector() );
+            List<Integer> tour = addPrefix( tourSuffix.getVector() );
            if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
            {
                continue; // skip tour; it is the reverse of another.

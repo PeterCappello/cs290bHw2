@@ -27,11 +27,16 @@ import api.Space;
 import api.Task;
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import system.Computer2Space;
+import system.ComputerImpl;
 import system.SpaceImpl;
 
 /**
@@ -56,10 +61,19 @@ abstract public class Client<T> extends JFrame
         setVisible( true );
     }
     
-    public Space getSpace( String domainName ) throws RemoteException
+    public Space getSpace( String domainName ) throws RemoteException, NotBoundException, MalformedURLException
     {
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
-        Space space = new SpaceImpl(); //(Computer) Naming.lookup( url );
+        return (Space) Naming.lookup( url );
+    }
+    
+    public Space getSpace( int numComputers ) throws RemoteException
+    {
+        SpaceImpl space = new SpaceImpl();
+        for ( int i = 0; i < numComputers; i++ )
+        {
+            space.register( new ComputerImpl() );
+        }
         return space;
     }
     

@@ -86,27 +86,14 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
+        long startTime = System.nanoTime();
         final Client client = new ClientEuclideanTsp();
         
-        // get Remote reference to computing system
-        Space space = client.getSpace( "localhost" );
-        Computer2Space computer2space = (Computer2Space) space;
-        computer2space.register( new ComputerImpl() );
-        computer2space.register( new ComputerImpl() );
-        computer2space.register( new ComputerImpl() );
-        computer2space.register( new ComputerImpl() );
-        System.out.println("# cores: " + Runtime.getRuntime().availableProcessors());
-        
-        long startTime = System.nanoTime();
+        Space space = client.getSpace( 2 );
         List<Task> tasks = client.decompose();
+        for (Task task : tasks) space.put( task );
         
-        // put tasks in space.
-        for (Task task : tasks) 
-        {
-            space.put( task );
-        }
-        
-        // collect results; compose solution
+        // compose solution from collected Result objects.
         List<Integer> shortestTour = new LinkedList<>();
         double shortestTourDistance = Double.MAX_VALUE;
         for (Task task : tasks) 
@@ -121,6 +108,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
             }
         }
         
+        // display solution
         client.add( client.getLabel( shortestTour ) );
         long totalTime = System.nanoTime() - startTime;
         Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );

@@ -67,27 +67,13 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
     public static void main( String[] args ) throws Exception
     {  
         System.setSecurityManager( new SecurityManager() );
-        final Client client = new ClientMandelbrotSet();
-        
-        // get Remote reference to computing system
-        Space space = client.getSpace( "localhost" );
-        Computer2Space computer2space = (Computer2Space) space;
-        computer2space.register( new ComputerImpl() );
-        computer2space.register( new ComputerImpl() );
-//        computer2space.register( new ComputerImpl() );
-//        computer2space.register( new ComputerImpl() );
-        System.out.println("# cores: " + Runtime.getRuntime().availableProcessors());
-        
         long startTime = System.nanoTime();
+        final Client client = new ClientMandelbrotSet();
+        Space space = client.getSpace( 2 );
         List<Task> tasks = client.decompose();
+        for ( Task task : tasks ) { space.put( task ); }
         
-        // put tasks in space.
-        for (Task task : tasks) 
-        {
-            space.put( task );
-        }
-        
-        // collect results; compose solution
+        // compose solution from collected results. 
         Integer[][] counts = new Integer[N_PIXELS][N_PIXELS];
         for (Task task : tasks) 
         {
@@ -104,6 +90,8 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
             }
             Logger.getLogger( ClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
         }
+        
+        // display solution
         client.add( client.getLabel( counts ) );
         long totalTime = System.nanoTime() - startTime;
         Logger.getLogger( ClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Total client time: {0} ms.", totalTime / 1000000 );
