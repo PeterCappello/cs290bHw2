@@ -97,17 +97,9 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         ComputerProxy( Computer computer ) { this.computer = computer; }
 
         @Override
-        public Result execute( Task task ) 
-        {
-            Result result = null;
-            try { result = computer.execute( task ); }
-            catch ( RemoteException ignore )
-            {
-                taskQ.add( task );
-                computerProxies.remove( computer );
-                Logger.getLogger( SpaceImpl.class.getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
-            }   
-            return result;
+        public Result execute( Task task ) throws RemoteException
+        { 
+            return computer.execute( task );
         }
         
         @Override
@@ -121,9 +113,23 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         public void run() 
         {
             while ( true ) 
-            {            
-                try { resultQ.add( execute( taskQ.take() ) ); }
-                catch( InterruptedException ignore ) {}
+            {
+                Task task = null;
+                try 
+                { 
+                    task = taskQ.take();  
+                    resultQ.add( execute( task ) );
+                }
+                catch ( RemoteException ignore )
+                {
+                    taskQ.add( task );
+                    computerProxies.remove( computer );
+                    Logger.getLogger( SpaceImpl.class.getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+                } 
+                catch ( InterruptedException ex ) 
+                {
+                    Logger.getLogger( SpaceImpl.class.getName()).log( Level.INFO, null, ex );
+                }
             }
         }
     }
