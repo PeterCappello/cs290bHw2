@@ -25,11 +25,13 @@ package applications.euclideantsp;
 
 import api.Task;
 import clients.ClientEuclideanTsp;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
+import util.PermutationEnumerator;
 
 /**
  * Find a tour of minimum cost among those that start with city 0, 
@@ -65,17 +67,35 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         double shortestTourDistance = tourDistance( CITIES, shortestTour );
         
         // Use Combinatoricslib-2.1 to generate tour suffixes
-        ICombinatoricsVector<Integer> initialVector = Factory.createVector( partialCityList );
-        Generator<Integer> generator = Factory.createPermutationGenerator(initialVector);
-        for ( ICombinatoricsVector<Integer> tourSuffix : generator ) 
+//        ICombinatoricsVector<Integer> initialVector = Factory.createVector( partialCityList );
+//        Generator<Integer> generator = Factory.createPermutationGenerator(initialVector);
+//        for ( ICombinatoricsVector<Integer> tourSuffix : generator ) 
+//        {
+//            List<Integer> tour = addPrefix( tourSuffix.getVector() );
+//           if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
+//           {
+//               continue; // skip tour; it is the reverse of another.
+//           }
+//           double tourDistance = tourDistance( CITIES, tour );
+//           if ( tourDistance < shortestTourDistance )
+//            {
+//                shortestTour = tour;
+//                shortestTourDistance = tourDistance;
+//            }
+//        }
+        
+        // Use my permutation enumerator
+        PermutationEnumerator permutationEnumerator = new PermutationEnumerator( partialCityList );
+        for ( List<Integer> subtour = permutationEnumerator.next(); subtour != null; subtour = permutationEnumerator.next() ) 
         {
-            List<Integer> tour = addPrefix( tourSuffix.getVector() );
-           if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
-           {
-               continue; // skip tour; it is the reverse of another.
-           }
-           double tourDistance = tourDistance( CITIES, tour );
-           if ( tourDistance < shortestTourDistance )
+            List<Integer> tour = new ArrayList<>( subtour );
+            tour = addPrefix( tour );
+            if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
+            {
+                continue; // skip tour; it is the reverse of another.
+            }
+            double tourDistance = tourDistance( CITIES, tour );
+            if ( tourDistance < shortestTourDistance )
             {
                 shortestTour = tour;
                 shortestTourDistance = tourDistance;
