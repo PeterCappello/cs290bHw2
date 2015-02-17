@@ -86,7 +86,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         for ( List<Integer> subtour = permutationEnumerator.next(); subtour != null; subtour = permutationEnumerator.next() ) 
         {
             List<Integer> tour = new ArrayList<>( subtour );
-            tour = addPrefix( tour );
+            addPrefix( tour );
             if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
             {
                 continue; // skip tour; it is the reverse of another.
