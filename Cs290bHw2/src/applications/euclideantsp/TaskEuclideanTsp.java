@@ -28,9 +28,6 @@ import clients.ClientEuclideanTsp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.paukov.combinatorics.Factory;
-import org.paukov.combinatorics.Generator;
-import org.paukov.combinatorics.ICombinatoricsVector;
 import util.PermutationEnumerator;
 
 /**
