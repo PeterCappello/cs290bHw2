@@ -70,7 +70,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
-        final Client client = new ClientEuclideanTsp();
+        final ClientEuclideanTsp client = new ClientEuclideanTsp();
         client.begin();
         Space space = client.getSpace( 2 );
         List<Task> tasks = client.decompose();
