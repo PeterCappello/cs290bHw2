@@ -105,11 +105,11 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         {
             integerList.add( i );
         }
-        for ( int i = 1; i <= integerList.size(); i++ )
+        for ( int i = 0; i < integerList.size(); i++ )
         {
             final List<Integer> partialList = new LinkedList<>( integerList );
-            partialList.remove( i - 1 );
-            final Task task = new TaskEuclideanTsp( i, partialList );
+            partialList.remove( i );
+            final Task task = new TaskEuclideanTsp( i + 1, partialList );
             tasks.add( task );
         }
         return tasks;

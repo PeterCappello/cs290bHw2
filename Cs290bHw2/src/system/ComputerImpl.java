@@ -41,7 +41,7 @@ public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
     /**
      * Execute a Task.
      * @param task to be executed.
-     * @return the return-value of the Task execute method.
+     * @return the return-value of the Task call method.
      * @throws RemoteException
      */
     @Override
@@ -49,7 +49,7 @@ public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
     { 
         numTasks++;
         final long startTime = System.nanoTime();
-        final T value = task.execute();
+        final T value = task.call();
         final long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds
         return new Result<>( value, runTime );
     }

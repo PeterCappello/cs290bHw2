@@ -55,7 +55,7 @@ public class TaskMandelbrotSet implements Task<ResultValueMandelbrotSet>
      * col correspond to regions in the complex plane.
      */
     @Override
-    public ResultValueMandelbrotSet execute() 
+    public ResultValueMandelbrotSet call() 
     {
         final Integer[][] counts = new Integer[numPixels][numPixels];
         final double delta = edgeLength / numPixels;

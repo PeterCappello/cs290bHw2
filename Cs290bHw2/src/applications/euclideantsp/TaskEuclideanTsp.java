@@ -57,7 +57,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
      * @return a tour of minimum cost.
      */
     @Override
-    public List<Integer> execute() 
+    public List<Integer> call() 
     {
         // initial value for shortestTour and its distance.
         List<Integer> shortestTour = addPrefix( new LinkedList<>( partialCityList ) );
