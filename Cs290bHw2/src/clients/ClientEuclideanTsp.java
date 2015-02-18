@@ -100,14 +100,14 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     public List<Task> decompose()
     {
         final List<Task> tasks = new LinkedList<>();
-        final List<Integer> ints = new LinkedList<>();
+        final List<Integer> integerList = new LinkedList<>();
         for ( int i = 1; i < CITIES.length; i++ )
         {
-            ints.add( i );
+            integerList.add( i );
         }
-        for ( int i = 1; i <= ints.size(); i++ )
+        for ( int i = 1; i <= integerList.size(); i++ )
         {
-            final List<Integer> partialList = new LinkedList<>( ints );
+            final List<Integer> partialList = new LinkedList<>( integerList );
             partialList.remove( i - 1 );
             final Task task = new TaskEuclideanTsp( i, partialList );
             tasks.add( task );
