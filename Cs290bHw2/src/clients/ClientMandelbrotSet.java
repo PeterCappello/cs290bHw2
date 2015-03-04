@@ -69,7 +69,7 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
         client.begin();
         Space space = client.getSpace( 2 );
         List<Task> tasks = client.decompose();
-        for ( Task task : tasks ) { space.put( task ); }
+        for ( Task task : tasks ) { space.execute( task ); }
         
         // compose solution from collected results. 
         Integer[][] counts = new Integer[N_PIXELS][N_PIXELS];

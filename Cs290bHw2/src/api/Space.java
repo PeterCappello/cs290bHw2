@@ -16,7 +16,12 @@ public interface Space extends Remote
     public static int PORT = 8001;
     public static String SERVICE_NAME = "Space";
 
-    void put( Task task ) throws RemoteException;
+    /**
+     *
+     * @param task
+     * @throws RemoteException
+     */
+    void execute( Task task ) throws RemoteException;
 
     Result take() throws RemoteException;
 

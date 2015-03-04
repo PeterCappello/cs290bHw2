@@ -74,7 +74,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         client.begin();
         Space space = client.getSpace( 2 );
         List<Task> tasks = client.decompose();
-        for (Task task : tasks) space.put( task );
+        for (Task task : tasks) space.execute( task );
         
         // compose solution from collected Result objects.
         List<Integer> shortestTour = new LinkedList<>();
