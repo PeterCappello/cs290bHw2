@@ -23,6 +23,7 @@
  */
 package clients;
 
+import api.Computer;
 import api.Space;
 import api.Task;
 import java.awt.BorderLayout;

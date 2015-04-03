@@ -23,16 +23,16 @@
  */
 package api;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  *
  * @author Peter Cappello
- * @param <T> type of the Task return value.
  */
-public interface Computer<T>
+public interface Computer extends Remote
 {    
-    public Result<T> execute( Task<T> task ) throws RemoteException;
+    public <T> Result<T> execute( Task<T> task ) throws RemoteException;
     
     public void exit() throws RemoteException;
 }

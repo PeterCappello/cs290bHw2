@@ -30,9 +30,8 @@ import java.rmi.server.UnicastRemoteObject;
 /**
  * An implementation of the Remote Computer interface.
  * @author Peter Cappello
- * @param <T> type of the return value of the Task that the Computer executes.
  */
-public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
+public class ComputerImpl extends UnicastRemoteObject implements Computer
 {
     public int numTasks = 0;
     
@@ -45,7 +44,7 @@ public class ComputerImpl<T> extends UnicastRemoteObject implements Computer<T>
      * @throws RemoteException
      */
     @Override
-    public Result<T> execute( Task<T> task ) throws RemoteException 
+    public <T> Result<T> execute( Task<T> task ) throws RemoteException 
     { 
         numTasks++;
         final long startTime = System.nanoTime();
