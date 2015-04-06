@@ -4,7 +4,6 @@
  */
 package system;
 
-import api.Computer;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

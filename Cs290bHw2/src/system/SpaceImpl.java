@@ -4,7 +4,6 @@
  */
 package system;
 
-import api.Computer;
 import api.Result;
 import api.Space;
 import api.Task;
