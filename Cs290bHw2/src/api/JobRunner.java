@@ -29,11 +29,13 @@ import system.SpaceImpl;
 /**
  *
  * @author Peter Cappello
+ * @param <T> type if value returned by getValue.
  */
-abstract public class JobRunner<T> extends Thread
+public class JobRunner<T> extends Thread
 {
     final private Job job;
     final private Space space;
+          private T value;
     
     public JobRunner( Job job, Space space ) 
     { 
@@ -54,11 +56,11 @@ abstract public class JobRunner<T> extends Thread
         }
         try { job.compose( space ); }
         catch( RemoteException exception )
-            { 
+        { 
             exception.printStackTrace();
             System.exit( 1 );
         }
     }
     
-    abstract public T getValue();
+    public T getValue() { return value; }
 }

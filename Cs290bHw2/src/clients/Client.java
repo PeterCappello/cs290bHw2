@@ -92,7 +92,7 @@ abstract public class Client<T> extends JFrame
         return space;
     }
     
-    abstract JLabel getLabel( T returnValue );
+    abstract JLabel getLabel( final T returnValue );
     
-    abstract List<Task> decompose();
+//    abstract List<Task> decompose();
 }

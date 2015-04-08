@@ -62,14 +62,10 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
 	{ 3, 6 }
     };
     
-    public ClientEuclideanTsp() throws RemoteException
-    { 
-        super( "Euclidean TSP" ); 
-    }
+    public ClientEuclideanTsp() throws RemoteException {  super( "Euclidean TSP" ); }
     
     public static void main( String[] args ) throws Exception
     {
-        System.setSecurityManager( new SecurityManager() );
         final ClientEuclideanTsp client = new ClientEuclideanTsp();
         client.begin();
         Space space = client.getSpace( 2 );

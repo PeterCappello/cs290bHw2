@@ -28,7 +28,6 @@ import api.Result;
 import api.Space;
 import api.Task;
 import clients.ClientEuclideanTsp;
-import static clients.ClientEuclideanTsp.CITIES;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     {
         taskList = new LinkedList<>();
         final List<Integer> integerList = new LinkedList<>();
-        for ( int i = 1; i < CITIES.length; i++ )
+        for ( int i = 1; i < cities.length; i++ )
         {
             integerList.add( i );
         }
@@ -75,7 +74,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
         {
             Result<List<Integer>> result = space.take();
             Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
-            double tourDistance = TaskEuclideanTsp.tourDistance( CITIES, result.getTaskReturnValue() );
+            double tourDistance = TaskEuclideanTsp.tourDistance( cities, result.getTaskReturnValue() );
             if ( tourDistance < shortestTourDistance )
             {
                 shortestTour = result.getTaskReturnValue();
@@ -86,7 +85,5 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     }
 
     @Override
-    public List<Integer> getValue() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    public List<Integer> getValue() { return tour; }
 }

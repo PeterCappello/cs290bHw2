@@ -25,17 +25,13 @@ package clients;
 
 import api.Job;
 import api.JobRunner;
-import api.Result;
 import api.Space;
-import api.Task;
 import applications.euclideantsp.JobEuclideanTsp;
-import applications.euclideantsp.TaskEuclideanTsp;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +42,7 @@ import javax.swing.JLabel;
  *
  * @author Peter Cappello
  */
-public class NewClient extends Client
+public class NewClient extends Client<List<Integer>>
 {
     static final private int NUM_PIXALS = 600;
     static final public  double[][] CITIES =
@@ -75,52 +71,65 @@ public class NewClient extends Client
         final NewClient client = new NewClient();
         client.begin();
         Space space = client.getSpace( 2 );
-        Job job = new JobEuclideanTsp( CITIES );
-//        JobRunner jobRunner = new JobRunner( job );
+//        SquaresJob job = new SquaresJob(n);
+//        JobRunnerFactory factory = new SimpleJobRunnerFactory();
+//        JobRunner jobRunner = factory.newJobRunner(job);
 //        jobRunner.run();
-        List<Task> tasks = client.decompose();
-        for (Task task : tasks) space.execute( task );
+//        assertEquals(n * (n + 1) * (2 * n + 1) / 6, job.getSumOfSquares());
+        Job job = new JobEuclideanTsp( CITIES );
+        JobRunner jobRunner = new JobRunner( job );
+        jobRunner.run();
         
-        // compose solution from collected Result objects.
-        List<Integer> shortestTour = new LinkedList<>();
-        double shortestTourDistance = Double.MAX_VALUE;
-        for (Task task : tasks) 
-        {
-            Result<List<Integer>> result = space.take();
-            Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
-            double tourDistance = TaskEuclideanTsp.tourDistance( CITIES, result.getTaskReturnValue() );
-            if ( tourDistance < shortestTourDistance )
-            {
-                shortestTour = result.getTaskReturnValue();
-                shortestTourDistance = tourDistance;
-            }
-        }
+//        List<Task> tasks = client.decompose();
+//        for (Task task : tasks) space.execute( task );
+//        
+//        // compose solution from collected Result objects.
+//        List<Integer> shortestTour = new LinkedList<>();
+//        double shortestTourDistance = Double.MAX_VALUE;
+//        for (Task task : tasks) 
+//        {
+//            Result<List<Integer>> result = space.take();
+//            Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
+//            double tourDistance = TaskEuclideanTsp.tourDistance( CITIES, result.getTaskReturnValue() );
+//            if ( tourDistance < shortestTourDistance )
+//            {
+//                shortestTour = result.getTaskReturnValue();
+//                shortestTourDistance = tourDistance;
+//            }
+//        }
         
         // display solution
-        client.add( client.getLabel( shortestTour ) );
+//        client.add( client.getLabel( shortestTour ) );
+        client.add( client.getLabel(  (List<Integer>) job.getValue() ) );
         client.end();
     }
     
-    @Override
-    public List<Task> decompose()
-    {
-        final List<Task> tasks = new LinkedList<>();
-        final List<Integer> integerList = new LinkedList<>();
-        for ( int i = 1; i < CITIES.length; i++ )
-        {
-            integerList.add( i );
-        }
-        for ( int i = 0; i < integerList.size(); i++ )
-        {
-            final List<Integer> partialList = new LinkedList<>( integerList );
-            partialList.remove( i );
-            final Task task = new TaskEuclideanTsp( i + 1, partialList );
-            tasks.add( task );
-        }
-        return tasks;
-    }
-    
 //    @Override
+//    public List<Task> decompose()
+//    {
+//        final List<Task> tasks = new LinkedList<>();
+//        final List<Integer> integerList = new LinkedList<>();
+//        for ( int i = 1; i < CITIES.length; i++ )
+//        {
+//            integerList.add( i );
+//        }
+//        for ( int i = 0; i < integerList.size(); i++ )
+//        {
+//            final List<Integer> partialList = new LinkedList<>( integerList );
+//            partialList.remove( i );
+//            final Task task = new TaskEuclideanTsp( i + 1, partialList );
+//            tasks.add( task );
+//        }
+//        return tasks;
+//    }
+    
+    /**
+     *
+     * @param cityList
+     * @return
+     */
+        
+    @Override
     public JLabel getLabel( final List<Integer> cityList )
     {
         Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
@@ -199,10 +208,5 @@ public class NewClient extends Client
             stringBuilder.append( city ).append( ' ' );
         });
         return stringBuilder.toString();
-    }
-
-    @Override
-    JLabel getLabel(Object returnValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

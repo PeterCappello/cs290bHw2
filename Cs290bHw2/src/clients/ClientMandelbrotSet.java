@@ -64,7 +64,6 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
      */
     public static void main( String[] args ) throws Exception
     {  
-        System.setSecurityManager( new SecurityManager() );
         final ClientMandelbrotSet client = new ClientMandelbrotSet();
         client.begin();
         Space space = client.getSpace( 2 );
