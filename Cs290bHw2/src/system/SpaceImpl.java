@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -39,6 +40,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      */
     @Override
     synchronized public void execute( Task task) { taskQ.add( task ); }
+    
+    public void putAll( List<Task> taskList )
+    {
+        for ( Task task : taskList )
+        {
+            taskQ.add( task );
+        }
+    }
 
     /**
      * Take a Result from the Result queue.

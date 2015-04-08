@@ -23,30 +23,33 @@
  */
 package clients;
 
+import api.Job;
+import api.JobRunner;
 import api.Result;
 import api.Space;
 import api.Task;
+import applications.euclideantsp.JobEuclideanTsp;
+import applications.euclideantsp.TaskEuclideanTsp;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
-import java.util.List;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import applications.euclideantsp.TaskEuclideanTsp;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 /**
  *
  * @author Peter Cappello
  */
-public class ClientEuclideanTsp extends Client<List<Integer>>
+public class NewClient extends Client
 {
-    private static final int NUM_PIXALS = 600;
-    public static final double[][] CITIES =
+    static final private int NUM_PIXALS = 600;
+    static final public  double[][] CITIES =
     {
 	{ 1, 1 },
 	{ 8, 1 },
@@ -62,17 +65,19 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
 	{ 3, 6 }
     };
     
-    public ClientEuclideanTsp() throws RemoteException
+    public NewClient() throws RemoteException
     { 
         super( "Euclidean TSP" ); 
     }
     
     public static void main( String[] args ) throws Exception
     {
-        System.setSecurityManager( new SecurityManager() );
-        final ClientEuclideanTsp client = new ClientEuclideanTsp();
+        final NewClient client = new NewClient();
         client.begin();
         Space space = client.getSpace( 2 );
+        Job job = new JobEuclideanTsp( CITIES );
+//        JobRunner jobRunner = new JobRunner( job );
+//        jobRunner.run();
         List<Task> tasks = client.decompose();
         for (Task task : tasks) space.execute( task );
         
@@ -94,7 +99,6 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         // display solution
         client.add( client.getLabel( shortestTour ) );
         client.end();
-        System.out.println("Exiting?");
     }
     
     @Override
@@ -116,7 +120,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         return tasks;
     }
     
-    @Override
+//    @Override
     public JLabel getLabel( final List<Integer> cityList )
     {
         Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
@@ -195,5 +199,10 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
             stringBuilder.append( city ).append( ' ' );
         });
         return stringBuilder.toString();
+    }
+
+    @Override
+    JLabel getLabel(Object returnValue) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

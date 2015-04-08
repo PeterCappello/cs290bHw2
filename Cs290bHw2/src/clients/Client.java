@@ -23,8 +23,10 @@
  */
 package clients;
 
-import system.Computer;
+import api.Job;
 import api.Space;
+import api.Space;
+import api.Task;
 import api.Task;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -48,15 +50,17 @@ import system.SpaceImpl;
  */
 abstract public class Client<T> extends JFrame
 {    
-    private long startTime; 
+    final private long startTime;
     
     public Client( final String title ) throws RemoteException
     {     
+        System.setSecurityManager( new SecurityManager() );
+        startTime = System.nanoTime();
         setTitle( title );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
     }
     
-    public void begin() { startTime = System.nanoTime(); }
+    public void begin() {}
     
     public void end() 
     { 
