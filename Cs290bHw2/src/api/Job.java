@@ -35,7 +35,12 @@ public interface Job<T>
 {
     List<Task> decompose( Space space ) throws RemoteException;
     
-    T compose( Space space ) throws RemoteException;
+    /**
+     *
+     * @param space
+     * @throws RemoteException
+     */
+    void compose( Space space ) throws RemoteException;
     
     T getValue();
 }

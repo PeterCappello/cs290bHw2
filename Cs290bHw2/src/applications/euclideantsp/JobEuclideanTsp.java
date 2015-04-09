@@ -27,7 +27,7 @@ import api.Job;
 import api.Result;
 import api.Space;
 import api.Task;
-import clients.ClientEuclideanTsp;
+import clients.OldClientEuclideanTsp;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,23 +66,21 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     }
 
     @Override
-    public List<Integer> compose( Space space ) throws RemoteException 
+    public void compose( Space space ) throws RemoteException 
     {
-        List<Integer> shortestTour = new LinkedList<>();
+        tour = new LinkedList<>();
         double shortestTourDistance = Double.MAX_VALUE;
         for ( Task task : taskList ) 
         {
             Result<List<Integer>> result = space.take();
-            Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
+            Logger.getLogger(OldClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
             double tourDistance = TaskEuclideanTsp.tourDistance( cities, result.getTaskReturnValue() );
             if ( tourDistance < shortestTourDistance )
             {
-                shortestTour = result.getTaskReturnValue();
+                tour = result.getTaskReturnValue();
                 shortestTourDistance = tourDistance;
             }
         }
-        tour = shortestTour;
-        return shortestTour;
     }
 
     @Override

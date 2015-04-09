@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  *
  * @author Peter Cappello
  */
-public class ClientMandelbrotSet extends Client<Integer[][]>
+public class OldClientMandelbrotSet extends OldClient<Integer[][]>
 {
     public static final double LOWER_LEFT_X = -0.7510975859375;
     public static final double LOWER_LEFT_Y = 0.1315680625;
@@ -52,7 +52,7 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
     public static final int ITERATION_LIMIT = 512;
     public static final int BLOCK_SIZE = 256;
     
-    public ClientMandelbrotSet() throws RemoteException 
+    public OldClientMandelbrotSet() throws RemoteException 
     { 
         super( "Mandelbrot Set Visualizer" );
     }
@@ -64,7 +64,7 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
      */
     public static void main( String[] args ) throws Exception
     {  
-        final ClientMandelbrotSet client = new ClientMandelbrotSet();
+        final OldClientMandelbrotSet client = new OldClientMandelbrotSet();
         client.begin();
         Space space = client.getSpace( 2 );
         List<Task> tasks = client.decompose();
@@ -85,7 +85,7 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
             {
                 System.arraycopy( blockCounts[row], 0, counts[blockRow * BLOCK_SIZE + row], blockCol * BLOCK_SIZE, BLOCK_SIZE );
             }
-            Logger.getLogger( ClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
+            Logger.getLogger(OldClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
         }
         
         // display solution

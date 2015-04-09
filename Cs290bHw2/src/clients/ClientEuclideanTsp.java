@@ -23,21 +23,17 @@
  */
 package clients;
 
-import api.Result;
-import api.Space;
-import api.Task;
+import applications.euclideantsp.JobEuclideanTsp;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
 import java.util.List;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import applications.euclideantsp.TaskEuclideanTsp;
-import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 /**
  *
@@ -45,8 +41,8 @@ import java.util.logging.Logger;
  */
 public class ClientEuclideanTsp extends Client<List<Integer>>
 {
-    private static final int NUM_PIXALS = 600;
-    public static final double[][] CITIES =
+    static final private int NUM_PIXALS = 600;
+    static final public  double[][] CITIES =
     {
 	{ 1, 1 },
 	{ 8, 1 },
@@ -62,60 +58,26 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
 	{ 3, 6 }
     };
     
-    public ClientEuclideanTsp() throws RemoteException {  super( "Euclidean TSP" ); }
+    public ClientEuclideanTsp() throws RemoteException
+    { 
+        super( "Euclidean TSP" ); 
+    }
     
     public static void main( String[] args ) throws Exception
     {
         final ClientEuclideanTsp client = new ClientEuclideanTsp();
-        client.begin();
-        Space space = client.getSpace( 2 );
-        List<Task> tasks = client.decompose();
-        for ( Task task : tasks ) space.execute( task );
-        
-        // compose solution from collected Result objects.
-        List<Integer> shortestTour = new LinkedList<>();
-        double shortestTourDistance = Double.MAX_VALUE;
-        for ( Task task : tasks ) 
-        {
-            Result<List<Integer>> result = space.take();
-            Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
-            double tourDistance = TaskEuclideanTsp.tourDistance( CITIES, result.getTaskReturnValue() );
-            if ( tourDistance < shortestTourDistance )
-            {
-                shortestTour = result.getTaskReturnValue();
-                shortestTourDistance = tourDistance;
-            }
-        }
-        
-        // display solution
-        client.add( client.getLabel( shortestTour ) );
-        client.end();
-        System.out.println("Exiting?");
+        client.run( new JobEuclideanTsp( CITIES ) );
     }
     
-    @Override
-    public List<Task> decompose()
-    {
-        final List<Task> tasks = new LinkedList<>();
-        final List<Integer> integerList = new LinkedList<>();
-        for ( int i = 1; i < CITIES.length; i++ )
-        {
-            integerList.add( i );
-        }
-        for ( int i = 0; i < integerList.size(); i++ )
-        {
-            final List<Integer> partialList = new LinkedList<>( integerList );
-            partialList.remove( i );
-            final Task task = new TaskEuclideanTsp( i + 1, partialList );
-            tasks.add( task );
-        }
-        return tasks;
-    }
-    
+    /**
+     *
+     * @param cityList
+     * @return
+     */    
     @Override
     public JLabel getLabel( final List<Integer> cityList )
     {
-        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
+        Logger.getLogger( OldClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
         Integer[] tour = cityList.toArray( new Integer[0] );
 
         // display the graph graphically, as it were
@@ -187,9 +149,8 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append( "Tour: " );
-        cityList.stream().forEach((city) -> {
-            stringBuilder.append( city ).append( ' ' );
-        });
+        cityList.stream()
+                .forEach( city -> { stringBuilder.append( city ).append( ' ' ); } );
         return stringBuilder.toString();
     }
 }

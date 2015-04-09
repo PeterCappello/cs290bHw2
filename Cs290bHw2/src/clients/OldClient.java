@@ -24,7 +24,6 @@
 package clients;
 
 import api.Job;
-import api.JobRunner;
 import api.Space;
 import api.Space;
 import api.Task;
@@ -47,13 +46,13 @@ import system.SpaceImpl;
 /**
  *
  * @author Peter Cappello
- * @param <T> return type the Task that this Client executes.
+ * @param <T> return type the Task that this OldClient executes.
  */
-abstract public class NewClient<T> extends JFrame
+abstract public class OldClient<T> extends JFrame
 {    
     final private long startTime;
     
-    public NewClient( final String title ) throws RemoteException
+    public OldClient( final String title ) throws RemoteException
     {     
         System.setSecurityManager( new SecurityManager() );
         startTime = System.nanoTime();
@@ -61,23 +60,11 @@ abstract public class NewClient<T> extends JFrame
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
     }
     
-    /**
-     *
-     * @param job
-     * @throws RemoteException
-     */
-    public void run( Job<T> job ) throws RemoteException
-    {
-        JobRunner jobRunner = new JobRunner( job );
-        jobRunner.run();
-        add( getLabel( job.getValue() ) );
-        Logger.getLogger( Client.class.getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
-    }
+    public void begin() {}
     
-    public void end( Job<T> job ) 
+    public void end() 
     { 
-//        add( getLabel( job.getValue() ) );
-//        Logger.getLogger( Client.class.getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
+        Logger.getLogger(OldClient.class.getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", (System.nanoTime() - startTime) / 1000000 );
     }
     
     public void add( final JLabel jLabel )
@@ -107,6 +94,5 @@ abstract public class NewClient<T> extends JFrame
     
     abstract JLabel getLabel( final T returnValue );
     
-//    abstract List<Task> decompose();
+    abstract List<Task> decompose();
 }
- 

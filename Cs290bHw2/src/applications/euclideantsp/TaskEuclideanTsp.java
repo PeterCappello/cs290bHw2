@@ -24,7 +24,7 @@
 package applications.euclideantsp;
 
 import api.Task;
-import clients.ClientEuclideanTsp;
+import clients.OldClientEuclideanTsp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +37,7 @@ import util.PermutationEnumerator;
  */
 public class TaskEuclideanTsp implements Task<List<Integer>>
 { 
-    final static private double[][] CITIES = ClientEuclideanTsp.CITIES;
+    final static private double[][] CITIES = OldClientEuclideanTsp.CITIES;
     final static Integer ONE = 1;
     final static Integer TWO = 2;
     
