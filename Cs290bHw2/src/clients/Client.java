@@ -24,8 +24,6 @@
 package clients;
 
 import api.Job;
-import api.Job;
-import api.JobRunner;
 import api.JobRunner;
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -43,12 +41,11 @@ import javax.swing.JScrollPane;
  */
 abstract public class Client<T> extends JFrame
 {    
-    final private long startTime;
+    final private long startTime = System.nanoTime();
     
     public Client( final String title ) throws RemoteException
     {     
         System.setSecurityManager( new SecurityManager() );
-        startTime = System.nanoTime();
         setTitle( title );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
     }
@@ -58,15 +55,15 @@ abstract public class Client<T> extends JFrame
      * @param job
      * @throws RemoteException
      */
-    public void run( Job<T> job ) throws RemoteException
+    public void run( final Job<T> job ) throws RemoteException
     {
-        JobRunner jobRunner = new JobRunner( job );
+        JobRunner<T> jobRunner = new JobRunner( job );
         jobRunner.run();
         add( getLabel( job.getValue() ) );
         Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
     }
     
-    public void add( final JLabel jLabel )
+    private void add( final JLabel jLabel )
     {
         final Container container = getContentPane();
         container.setLayout( new BorderLayout() );

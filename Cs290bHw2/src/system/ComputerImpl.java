@@ -61,7 +61,9 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
          */
         final String domainName = "localhost";
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
-        final Computer2Space space = (Computer2Space) Naming.lookup( url );
+//        final Computer2Space space = (Computer2Space) Naming.lookup( url );
+        final Space space = (Space) Naming.lookup( url );
+
         space.register( new ComputerImpl() );
         System.out.println( "Computer running." );
     }

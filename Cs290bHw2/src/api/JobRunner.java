@@ -35,11 +35,10 @@ import system.SpaceImpl;
  * @author Peter Cappello
  * @param <T> type if value returned by getValue.
  */
-public class JobRunner<T> //extends Thread
+public class JobRunner<T>
 {
-    final private Job job;
+    final private Job<T> job;
     final private Space space;
-          private T value;
     
     public JobRunner( Job job, String domainName ) throws RemoteException, NotBoundException, MalformedURLException
     { 
@@ -58,21 +57,12 @@ public class JobRunner<T> //extends Thread
         }
     }
     
-    public void run()
+    public void run() throws RemoteException
     {
         try { space.putAll( job.decompose( space ) ); }
-        catch ( RemoteException exception ) 
-        { 
-            exception.printStackTrace();
-            System.exit( 1 );
-        }
+        catch ( RemoteException exception ) { throw exception; }
+        
         try { job.compose( space ); }
-        catch( RemoteException exception )
-        { 
-            exception.printStackTrace();
-            System.exit( 1 );
-        }
+        catch( RemoteException exception ) { throw exception; }
     }
-    
-    public T getValue() { return value; }
 }
