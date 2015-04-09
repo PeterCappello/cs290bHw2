@@ -27,7 +27,7 @@ import api.Job;
 import api.Result;
 import api.Space;
 import api.Task;
-import clients.OldClientEuclideanTsp;
+//import clients.OldClientEuclideanTsp;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
         for ( Task task : taskList ) 
         {
             Result<List<Integer>> result = space.take();
-            Logger.getLogger(OldClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
+            Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
             double tourDistance = TaskEuclideanTsp.tourDistance( cities, result.getTaskReturnValue() );
             if ( tourDistance < shortestTourDistance )
             {

@@ -23,6 +23,9 @@
  */
 package api;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import system.ComputerImpl;
 import system.SpaceImpl;
@@ -35,13 +38,14 @@ import system.SpaceImpl;
 public class JobRunner<T> //extends Thread
 {
     final private Job job;
-    final private SpaceImpl space;
+    final private Space space;
           private T value;
     
-    public JobRunner( Job job, SpaceImpl space ) 
+    public JobRunner( Job job, String domainName ) throws RemoteException, NotBoundException, MalformedURLException
     { 
         this.job = job;
-        this.space = space;
+        final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
+        space = (Space) Naming.lookup( url );
     }
     
     public JobRunner( Job job ) throws RemoteException 
@@ -54,7 +58,6 @@ public class JobRunner<T> //extends Thread
         }
     }
     
-//    @Override
     public void run()
     {
         try { space.putAll( job.decompose( space ) ); }

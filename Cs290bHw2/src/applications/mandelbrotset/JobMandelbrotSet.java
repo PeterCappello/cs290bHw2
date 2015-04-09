@@ -23,19 +23,10 @@
  */
 package applications.mandelbrotset;
 
-import applications.euclideantsp.*;
 import api.Job;
 import api.Result;
 import api.Space;
 import api.Task;
-import clients.OldClientEuclideanTsp;
-import clients.OldClientMandelbrotSet;
-import static clients.OldClientMandelbrotSet.BLOCK_SIZE;
-import static clients.OldClientMandelbrotSet.EDGE_LENGTH;
-import static clients.OldClientMandelbrotSet.ITERATION_LIMIT;
-import static clients.OldClientMandelbrotSet.LOWER_LEFT_X;
-import static clients.OldClientMandelbrotSet.LOWER_LEFT_Y;
-import static clients.OldClientMandelbrotSet.N_PIXELS;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,7 +86,7 @@ public class JobMandelbrotSet implements Job<Integer[][]>
             {
                 System.arraycopy( blockCounts[row], 0, counts[blockRow * BLOCK_SIZE + row], blockCol * BLOCK_SIZE, BLOCK_SIZE );
             }
-            Logger.getLogger(OldClientMandelbrotSet.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
+            Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
         }
     }
 

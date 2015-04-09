@@ -77,7 +77,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     @Override
     public JLabel getLabel( final List<Integer> cityList )
     {
-        Logger.getLogger( OldClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
+        Logger.getLogger( this.getClass().getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
         Integer[] tour = cityList.toArray( new Integer[0] );
 
         // display the graph graphically, as it were

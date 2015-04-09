@@ -24,16 +24,11 @@
 package clients;
 
 import applications.mandelbrotset.JobMandelbrotSet;
-import static clients.OldClientMandelbrotSet.ITERATION_LIMIT;
-import static clients.OldClientMandelbrotSet.N_PIXELS;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 

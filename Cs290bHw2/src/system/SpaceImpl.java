@@ -34,13 +34,6 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         Logger.getLogger( SpaceImpl.class.getName() ).log( Level.INFO, "Space started." );
     }
     
-    /**
-     * Put a task into the Task queue.
-     * @param task
-     */
-    @Override
-    synchronized public void execute( Task task ) { taskQ.add( task ); }
-    
     @Override
     synchronized public void putAll( List<Task> taskList )
     {
