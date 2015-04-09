@@ -81,6 +81,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
                 shortestTourDistance = tourDistance;
             }
         }
+        tour = shortestTour;
         return shortestTour;
     }
 

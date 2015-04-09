@@ -39,9 +39,10 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @param task
      */
     @Override
-    synchronized public void execute( Task task) { taskQ.add( task ); }
+    synchronized public void execute( Task task ) { taskQ.add( task ); }
     
-    public void putAll( List<Task> taskList )
+    @Override
+    synchronized public void putAll( List<Task> taskList )
     {
         for ( Task task : taskList )
         {
@@ -56,10 +57,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     @Override
     synchronized public Result take() 
     {
-        try 
-        {
-            return resultQ.take();
-        } 
+        try { return resultQ.take(); } 
         catch ( InterruptedException exception ) 
         {
             Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, null, exception);

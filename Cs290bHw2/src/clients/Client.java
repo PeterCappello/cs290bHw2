@@ -94,5 +94,5 @@ abstract public class Client<T> extends JFrame
     
     abstract JLabel getLabel( final T returnValue );
     
-//    abstract List<Task> decompose();
+    abstract List<Task> decompose();
 }

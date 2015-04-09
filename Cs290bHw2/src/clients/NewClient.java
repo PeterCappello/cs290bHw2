@@ -26,187 +26,87 @@ package clients;
 import api.Job;
 import api.JobRunner;
 import api.Space;
-import applications.euclideantsp.JobEuclideanTsp;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
+import api.Space;
+import api.Task;
+import api.Task;
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import system.ComputerImpl;
+import system.SpaceImpl;
 
 /**
  *
  * @author Peter Cappello
+ * @param <T> return type the Task that this Client executes.
  */
-public class NewClient extends Client<List<Integer>>
-{
-    static final private int NUM_PIXALS = 600;
-    static final public  double[][] CITIES =
-    {
-	{ 1, 1 },
-	{ 8, 1 },
-	{ 8, 8 },
-	{ 1, 8 },
-	{ 2, 2 },
-	{ 7, 2 },
-	{ 7, 7 },
-	{ 2, 7 },
-	{ 3, 3 },
-	{ 6, 3 },
-	{ 6, 6 },
-	{ 3, 6 }
-    };
+abstract public class NewClient<T> extends JFrame
+{    
+    final private long startTime;
     
-    public NewClient() throws RemoteException
-    { 
-        super( "Euclidean TSP" ); 
+    public NewClient( final String title ) throws RemoteException
+    {     
+        System.setSecurityManager( new SecurityManager() );
+        startTime = System.nanoTime();
+        setTitle( title );
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
     }
-    
-    public static void main( String[] args ) throws Exception
-    {
-        final NewClient client = new NewClient();
-        client.begin();
-        Space space = client.getSpace( 2 );
-//        SquaresJob job = new SquaresJob(n);
-//        JobRunnerFactory factory = new SimpleJobRunnerFactory();
-//        JobRunner jobRunner = factory.newJobRunner(job);
-//        jobRunner.run();
-//        assertEquals(n * (n + 1) * (2 * n + 1) / 6, job.getSumOfSquares());
-        Job job = new JobEuclideanTsp( CITIES );
-        JobRunner jobRunner = new JobRunner( job );
-        jobRunner.run();
-        
-//        List<Task> tasks = client.decompose();
-//        for (Task task : tasks) space.execute( task );
-//        
-//        // compose solution from collected Result objects.
-//        List<Integer> shortestTour = new LinkedList<>();
-//        double shortestTourDistance = Double.MAX_VALUE;
-//        for (Task task : tasks) 
-//        {
-//            Result<List<Integer>> result = space.take();
-//            Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
-//            double tourDistance = TaskEuclideanTsp.tourDistance( CITIES, result.getTaskReturnValue() );
-//            if ( tourDistance < shortestTourDistance )
-//            {
-//                shortestTour = result.getTaskReturnValue();
-//                shortestTourDistance = tourDistance;
-//            }
-//        }
-        
-        // display solution
-//        client.add( client.getLabel( shortestTour ) );
-        client.add( client.getLabel(  (List<Integer>) job.getValue() ) );
-        client.end();
-    }
-    
-//    @Override
-//    public List<Task> decompose()
-//    {
-//        final List<Task> tasks = new LinkedList<>();
-//        final List<Integer> integerList = new LinkedList<>();
-//        for ( int i = 1; i < CITIES.length; i++ )
-//        {
-//            integerList.add( i );
-//        }
-//        for ( int i = 0; i < integerList.size(); i++ )
-//        {
-//            final List<Integer> partialList = new LinkedList<>( integerList );
-//            partialList.remove( i );
-//            final Task task = new TaskEuclideanTsp( i + 1, partialList );
-//            tasks.add( task );
-//        }
-//        return tasks;
-//    }
     
     /**
      *
-     * @param cityList
-     * @return
+     * @param job
+     * @throws RemoteException
      */
-        
-    @Override
-    public JLabel getLabel( final List<Integer> cityList )
+    public void run( Job<T> job ) throws RemoteException
     {
-        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
-        Integer[] tour = cityList.toArray( new Integer[0] );
-
-        // display the graph graphically, as it were
-        // get minX, maxX, minY, maxY, assuming they 0.0 <= mins
-        double minX = CITIES[0][0], maxX = CITIES[0][0];
-        double minY = CITIES[0][1], maxY = CITIES[0][1];
-        for ( double[] cities : CITIES ) 
-        {
-            if ( cities[0] < minX ) 
-                minX = cities[0];
-            if ( cities[0] > maxX ) 
-                maxX = cities[0];
-            if ( cities[1] < minY ) 
-                minY = cities[1];
-            if ( cities[1] > maxY ) 
-                maxY = cities[1];
-        }
-
-        // scale points to fit in unit square
-        final double side = Math.max( maxX - minX, maxY - minY );
-        double[][] scaledCities = new double[CITIES.length][2];
-        for ( int i = 0; i < CITIES.length; i++ )
-        {
-            scaledCities[i][0] = ( CITIES[i][0] - minX ) / side;
-            scaledCities[i][1] = ( CITIES[i][1] - minY ) / side;
-        }
-
-        final Image image = new BufferedImage( NUM_PIXALS, NUM_PIXALS, BufferedImage.TYPE_INT_ARGB );
-        final Graphics graphics = image.getGraphics();
-
-        final int margin = 10;
-        final int field = NUM_PIXALS - 2*margin;
-        // draw edges
-        graphics.setColor( Color.BLUE );
-        int x1, y1, x2, y2;
-        int city1 = tour[0], city2;
-        x1 = margin + (int) ( scaledCities[city1][0]*field );
-        y1 = margin + (int) ( scaledCities[city1][1]*field );
-        for ( int i = 1; i < CITIES.length; i++ )
-        {
-            city2 = tour[i];
-            x2 = margin + (int) ( scaledCities[city2][0]*field );
-            y2 = margin + (int) ( scaledCities[city2][1]*field );
-            graphics.drawLine( x1, y1, x2, y2 );
-            x1 = x2;
-            y1 = y2;
-        }
-        city2 = tour[0];
-        x2 = margin + (int) ( scaledCities[city2][0]*field );
-        y2 = margin + (int) ( scaledCities[city2][1]*field );
-        graphics.drawLine( x1, y1, x2, y2 );
-
-        // draw vertices
-        final int VERTEX_DIAMETER = 6;
-        graphics.setColor( Color.RED );
-        for ( int i = 0; i < CITIES.length; i++ )
-        {
-            int x = margin + (int) ( scaledCities[i][0]*field );
-            int y = margin + (int) ( scaledCities[i][1]*field );
-            graphics.fillOval( x - VERTEX_DIAMETER/2,
-                               y - VERTEX_DIAMETER/2,
-                              VERTEX_DIAMETER, VERTEX_DIAMETER);
-        }
-        final ImageIcon imageIcon = new ImageIcon( image );
-        return new JLabel( imageIcon );
+        JobRunner jobRunner = new JobRunner( job );
+        jobRunner.run();
+        add( getLabel( job.getValue() ) );
+        Logger.getLogger( Client.class.getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
     }
     
-    private String tourToString( List<Integer> cityList )
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append( "Tour: " );
-        cityList.stream().forEach((city) -> {
-            stringBuilder.append( city ).append( ' ' );
-        });
-        return stringBuilder.toString();
+    public void end( Job<T> job ) 
+    { 
+//        add( getLabel( job.getValue() ) );
+//        Logger.getLogger( Client.class.getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
     }
+    
+    public void add( final JLabel jLabel )
+    {
+        final Container container = getContentPane();
+        container.setLayout( new BorderLayout() );
+        container.add( new JScrollPane( jLabel ), BorderLayout.CENTER );
+        pack();
+        setVisible( true );
+    }
+    
+    public Space getSpace( String domainName ) throws RemoteException, NotBoundException, MalformedURLException
+    {
+        final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
+        return (Space) Naming.lookup( url );
+    }
+    
+    public Space getSpace( int numComputers ) throws RemoteException
+    {
+        SpaceImpl space = new SpaceImpl();
+        for ( int i = 0; i < numComputers; i++ )
+        {
+            space.register( new ComputerImpl() );
+        }
+        return space;
+    }
+    
+    abstract JLabel getLabel( final T returnValue );
+    
+//    abstract List<Task> decompose();
 }
+ 

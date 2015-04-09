@@ -24,6 +24,7 @@
 package api;
 
 import java.rmi.RemoteException;
+import system.ComputerImpl;
 import system.SpaceImpl;
 
 /**
@@ -31,21 +32,29 @@ import system.SpaceImpl;
  * @author Peter Cappello
  * @param <T> type if value returned by getValue.
  */
-public class JobRunner<T> extends Thread
+public class JobRunner<T> //extends Thread
 {
     final private Job job;
-    final private Space space;
+    final private SpaceImpl space;
           private T value;
     
-    public JobRunner( Job job, Space space ) 
+    public JobRunner( Job job, SpaceImpl space ) 
     { 
         this.job = job;
         this.space = space;
     }
     
-    public JobRunner( Job job ) throws RemoteException { this( job, new SpaceImpl() ); }
+    public JobRunner( Job job ) throws RemoteException 
+    { 
+        this.job = job;
+        this.space = new SpaceImpl();
+        for ( int i = 0; i < Runtime.getRuntime().availableProcessors(); i++ )
+        {
+            space.register( new ComputerImpl() );
+        }
+    }
     
-    @Override
+//    @Override
     public void run()
     {
         try { space.putAll( job.decompose( space ) ); }
