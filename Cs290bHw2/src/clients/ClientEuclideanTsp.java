@@ -28,6 +28,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
@@ -60,13 +62,28 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     
     public ClientEuclideanTsp() throws RemoteException
     { 
-        super( "Euclidean TSP" ); 
+        super( "Euclidean TSP", new JobEuclideanTsp( CITIES ) ); 
+    }
+    
+    /**
+     *
+     * @param spaceDomainName
+     * @throws RemoteException
+     * @throws NotBoundException
+     * @throws MalformedURLException
+     */
+    public ClientEuclideanTsp( String spaceDomainName ) 
+            throws RemoteException, NotBoundException, MalformedURLException
+    { 
+        super( "Euclidean TSP", new JobEuclideanTsp( CITIES ), spaceDomainName ); 
     }
     
     public static void main( String[] args ) throws Exception
     {
         final ClientEuclideanTsp client = new ClientEuclideanTsp();
-        client.run( new JobEuclideanTsp( CITIES ) );
+//        client.run( new JobEuclideanTsp( CITIES ) );
+//        client.run( new JobEuclideanTsp( CITIES ) );
+        client.run();
     }
     
     /**

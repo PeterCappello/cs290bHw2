@@ -27,6 +27,8 @@ import api.Job;
 import api.JobRunner;
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,26 +44,59 @@ import javax.swing.JScrollPane;
 abstract public class Client<T> extends JFrame
 {    
     final private long startTime = System.nanoTime();
+    final private JobRunner jobRunner;
+    final private Job<T> job;
     
-    public Client( final String title ) throws RemoteException
+//    public Client( final String title ) throws RemoteException
+    public Client( final String title, Job<T> job ) throws RemoteException
     {     
         System.setSecurityManager( new SecurityManager() );
         setTitle( title );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        this.job = job;
+        jobRunner = new JobRunner( job );
+    }
+    
+    public Client( final String title, Job<T> job, String spaceDomainName ) 
+            throws RemoteException, NotBoundException, MalformedURLException
+    {     
+        System.setSecurityManager( new SecurityManager() );
+        setTitle( title );
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        this.job = job;
+        jobRunner = new JobRunner( job, spaceDomainName );
     }
     
     /**
      *
-     * @param job
      * @throws RemoteException
      */
-    public void run( final Job<T> job ) throws RemoteException
+//    public void run( final Job<T> job ) throws RemoteException
+    public void run() throws RemoteException
     {
-        JobRunner<T> jobRunner = new JobRunner( job );
+//        JobRunner<T> jobRunner = new JobRunner( job );
         jobRunner.run();
         add( getLabel( job.getValue() ) );
         Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
     }
+    
+//    /**
+//     *
+//     * @param job
+//     * @param spaceDomainName
+//     * @throws RemoteException
+//     * @throws java.rmi.NotBoundException
+//     * @throws java.net.MalformedURLException
+//     */
+////    public void run( final Job<T> job, String spaceDomainName ) 
+//    public void run()
+////            throws RemoteException, NotBoundException, MalformedURLException
+//    {
+////        JobRunner<T> jobRunner = new JobRunner( job, spaceDomainName );
+//        jobRunner.run();
+//        add( getLabel( job.getValue() ) );
+//        Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
+//    }
     
     private void add( final JLabel jLabel )
     {
