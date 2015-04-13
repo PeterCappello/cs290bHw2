@@ -176,7 +176,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
    {
        double[][] distances = new double[ CITIES.length][ CITIES.length];
        for ( int i = 0; i < CITIES.length; i++ )
-        for ( int j = 0; j < CITIES.length; j++ )
+        for ( int j = 0; j < i; j++ )
         {
             distances[ i ][ j ] = distances[ j ][ i ] = distance( CITIES[ i ], CITIES[ j ] );
         }

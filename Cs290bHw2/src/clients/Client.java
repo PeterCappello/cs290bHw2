@@ -47,7 +47,6 @@ abstract public class Client<T> extends JFrame
     final private JobRunner jobRunner;
     final private Job<T> job;
     
-//    public Client( final String title ) throws RemoteException
     public Client( final String title, Job<T> job ) throws RemoteException
     {     
         System.setSecurityManager( new SecurityManager() );
@@ -74,29 +73,10 @@ abstract public class Client<T> extends JFrame
 //    public void run( final Job<T> job ) throws RemoteException
     public void run() throws RemoteException
     {
-//        JobRunner<T> jobRunner = new JobRunner( job );
         jobRunner.run();
         add( getLabel( job.getValue() ) );
         Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
     }
-    
-//    /**
-//     *
-//     * @param job
-//     * @param spaceDomainName
-//     * @throws RemoteException
-//     * @throws java.rmi.NotBoundException
-//     * @throws java.net.MalformedURLException
-//     */
-////    public void run( final Job<T> job, String spaceDomainName ) 
-//    public void run()
-////            throws RemoteException, NotBoundException, MalformedURLException
-//    {
-////        JobRunner<T> jobRunner = new JobRunner( job, spaceDomainName );
-//        jobRunner.run();
-//        add( getLabel( job.getValue() ) );
-//        Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Client time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
-//    }
     
     private void add( final JLabel jLabel )
     {
