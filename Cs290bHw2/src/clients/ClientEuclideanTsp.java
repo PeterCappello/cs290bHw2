@@ -59,6 +59,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
 	{ 6, 6 },
 	{ 3, 6 }
     };
+    static final public double[][] DISTANCES = initializeDistances();
     
     public ClientEuclideanTsp() throws RemoteException
     { 
@@ -170,4 +171,22 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
                 .forEach( city -> { stringBuilder.append( city ).append( ' ' ); } );
         return stringBuilder.toString();
     }
+    
+    static private double[][] initializeDistances()
+   {
+       double[][] distances = new double[ CITIES.length][ CITIES.length];
+       for ( int i = 0; i < CITIES.length; i++ )
+        for ( int j = 0; j < CITIES.length; j++ )
+        {
+            distances[ i ][ j ] = distances[ j ][ i ] = distance( CITIES[ i ], CITIES[ j ] );
+        }
+       return distances;
+   }
+    
+    private static double distance( final double[] city1, final double[] city2 )
+   {
+       final double deltaX = city1[ 0 ] - city2[ 0 ];
+       final double deltaY = city1[ 1 ] - city2[ 1 ];
+       return Math.sqrt( deltaX * deltaX + deltaY * deltaY );
+   }
 }

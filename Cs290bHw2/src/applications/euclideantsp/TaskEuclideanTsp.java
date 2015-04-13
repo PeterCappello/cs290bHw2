@@ -37,12 +37,13 @@ import util.PermutationEnumerator;
  */
 public class TaskEuclideanTsp implements Task<List<Integer>>
 { 
-    final static private double[][] CITIES = ClientEuclideanTsp.CITIES;
+    final static private double[][] DISTANCES = ClientEuclideanTsp.DISTANCES;
     final static Integer ONE = 1;
     final static Integer TWO = 2;
     
     final private int secondCity;
     final private List<Integer> partialCityList;
+//    final private double cost;
         
     public TaskEuclideanTsp( int secondCity, List<Integer> partialCityList )
     {
@@ -51,9 +52,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
     }
     
     /**
-     * Produce a tour of minimum cost.
-     * Uses combinatoricslib-2.1 library to generate permutations. 
-     * See https://code.google.com/p/combinatoricslib/.
+     * Compute a tour of minimum cost.
      * @return a tour of minimum cost.
      */
     @Override
@@ -61,25 +60,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
     {
         // initial value for shortestTour and its distance.
         List<Integer> shortestTour = addPrefix( new LinkedList<>( partialCityList ) );
-        double shortestTourDistance = tourDistance( CITIES, shortestTour );
-        
-        // Use Combinatoricslib-2.1 to generate tour suffixes
-//        ICombinatoricsVector<Integer> initialVector = Factory.createVector( partialCityList );
-//        Generator<Integer> generator = Factory.createPermutationGenerator(initialVector);
-//        for ( ICombinatoricsVector<Integer> tourSuffix : generator ) 
-//        {
-//            List<Integer> tour = addPrefix( tourSuffix.getVector() );
-//           if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
-//           {
-//               continue; // skip tour; it is the reverse of another.
-//           }
-//           double tourDistance = tourDistance( CITIES, tour );
-//           if ( tourDistance < shortestTourDistance )
-//            {
-//                shortestTour = tour;
-//                shortestTourDistance = tourDistance;
-//            }
-//        }
+        double shortestTourDistance = tourDistance( shortestTour );
         
         // Use my permutation enumerator
         PermutationEnumerator<Integer> permutationEnumerator = new PermutationEnumerator<>( partialCityList );
@@ -91,7 +72,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
             {
                 continue; // skip tour; it is the reverse of another.
             }
-            double tourDistance = tourDistance( CITIES, tour );
+            double tourDistance = tourDistance( tour );
             if ( tourDistance < shortestTourDistance )
             {
                 shortestTour = tour;
@@ -122,21 +103,19 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         } );
         return stringBuilder.toString();
     }
-
-   public static double tourDistance( final double[][] cities, final List<Integer> tour )
-   {
-       double cost = 0.0;
-       for ( int city = 0; city < tour.size() - 1; city ++ )
-       {
-           cost += distance( cities[ tour.get( city ) ], cities[ tour.get( city + 1 ) ] );
-       }
-       return cost + distance( cities[ tour.get( tour.size() - 1 ) ], cities[ tour.get( 0 ) ] );
-   }
-   
-   private static double distance( final double[] city1, final double[] city2 )
-   {
-       final double deltaX = city1[ 0 ] - city2[ 0 ];
-       final double deltaY = city1[ 1 ] - city2[ 1 ];
-       return Math.sqrt( deltaX * deltaX + deltaY * deltaY );
-   }
+    
+    /**
+     *
+     * @param tour
+     * @return
+     */
+    static public double tourDistance( final List<Integer> tour  )
+    {
+        double cost = DISTANCES[ tour.get( tour.size() - 1 ) ][ tour.get( 0 ) ];
+        for ( int city = 0; city < tour.size() - 1; city ++ )
+        {
+            cost += DISTANCES[ tour.get( city ) ][ tour.get( city + 1 ) ];
+        }
+        return cost;
+    }
 }

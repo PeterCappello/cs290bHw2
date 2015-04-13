@@ -47,13 +47,13 @@ public class ClientMandelbrot extends Client<Integer[][]>
     
     public ClientMandelbrot() throws RemoteException
     { 
-        super( "Mandelbrot Set Visualizer" ); 
+        super( "Mandelbrot Set Visualizer", new JobMandelbrotSet() ); 
     }
     
     public static void main( String[] args ) throws Exception
     {
         final ClientMandelbrot client = new ClientMandelbrot();
-        client.run( new JobMandelbrotSet() );
+        client.run();
     }
     
     /**
