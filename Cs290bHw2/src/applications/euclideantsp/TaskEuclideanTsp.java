@@ -24,7 +24,7 @@
 package applications.euclideantsp;
 
 import api.Task;
-import clients.ClientEuclideanTsp;
+import static clients.ClientEuclideanTsp.CITIES;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +37,7 @@ import util.PermutationEnumerator;
  */
 public class TaskEuclideanTsp implements Task<List<Integer>>
 { 
-    final static private double[][] DISTANCES = ClientEuclideanTsp.DISTANCES;
+    static final public double[][] DISTANCES = initializeDistances();
     final static Integer ONE = 1;
     final static Integer TWO = 2;
     
@@ -117,5 +117,23 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
             cost += DISTANCES[ tour.get( city ) ][ tour.get( city + 1 ) ];
         }
         return cost;
+    }
+    
+    static private double[][] initializeDistances()
+    {
+        double[][] distances = new double[ CITIES.length][ CITIES.length];
+        for ( int i = 0; i < CITIES.length; i++ )
+        for ( int j = 0; j < i; j++ )
+        {
+            distances[ i ][ j ] = distances[ j ][ i ] = distance( CITIES[ i ], CITIES[ j ] );
+        }
+       return distances;
+    }
+    
+    private static double distance( final double[] city1, final double[] city2 )
+    {
+        final double deltaX = city1[ 0 ] - city2[ 0 ];
+        final double deltaY = city1[ 1 ] - city2[ 1 ];
+        return Math.sqrt( deltaX * deltaX + deltaY * deltaY );
     }
 }
