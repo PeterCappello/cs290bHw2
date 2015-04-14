@@ -40,18 +40,20 @@ import java.util.logging.Logger;
  */
 public class JobEuclideanTsp implements Job<List<Integer>>
 {
-    private final double[][] cities;
+//    private final double[][] cities;
     private List<Task> taskList;
     private List<Integer> tour;
     
-    public JobEuclideanTsp( double[][] cities ) { this.cities = cities; }
+//    public JobEuclideanTsp( double[][] cities ) { this.cities = cities; }
+    public JobEuclideanTsp() {}
     
     @Override
     public List<Task> decompose( Space space ) throws RemoteException
     {
         taskList = new LinkedList<>();
         final List<Integer> integerList = new LinkedList<>();
-        for ( int i = 1; i < cities.length; i++ )
+//        for ( int i = 1; i < cities.length; i++ )
+        for ( int i = 1; i < TaskEuclideanTsp.CITIES.length; i++ )
         {
             integerList.add( i );
         }

@@ -24,6 +24,7 @@
 package clients;
 
 import applications.euclideantsp.JobEuclideanTsp;
+import applications.euclideantsp.TaskEuclideanTsp;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -44,25 +45,11 @@ import javax.swing.JLabel;
 public class ClientEuclideanTsp extends Client<List<Integer>>
 {
     static final private int NUM_PIXALS = 600;
-    static final public  double[][] CITIES =
-    {
-	{ 1, 1 },
-	{ 8, 1 },
-	{ 8, 8 },
-	{ 1, 8 },
-	{ 2, 2 },
-	{ 7, 2 },
-	{ 7, 7 },
-	{ 2, 7 },
-	{ 3, 3 },
-	{ 6, 3 },
-	{ 6, 6 },
-	{ 3, 6 }
-    };
+    static final public  double[][] CITIES = TaskEuclideanTsp.CITIES;
     
     public ClientEuclideanTsp() throws RemoteException
     { 
-        super( "Euclidean TSP", new JobEuclideanTsp( CITIES ) ); 
+        super( "Euclidean TSP", new JobEuclideanTsp() );
     }
     
     /**
@@ -75,7 +62,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     public ClientEuclideanTsp( String spaceDomainName ) 
             throws RemoteException, NotBoundException, MalformedURLException
     { 
-        super( "Euclidean TSP", new JobEuclideanTsp( CITIES ), spaceDomainName ); 
+        super( "Euclidean TSP", new JobEuclideanTsp(), spaceDomainName );
     }
     
     public static void main( String[] args ) throws Exception
@@ -92,7 +79,7 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
     @Override
     public JLabel getLabel( final List<Integer> cityList )
     {
-        Logger.getLogger( this.getClass().getCanonicalName() ).log(Level.INFO, tourToString( cityList ) );
+        Logger.getLogger( this.getClass().getCanonicalName() ).log(Level.INFO, "Tour: {0}", cityList.toString());
         Integer[] tour = cityList.toArray( new Integer[0] );
 
         // display the graph graphically, as it were
@@ -158,14 +145,5 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         }
         final ImageIcon imageIcon = new ImageIcon( image );
         return new JLabel( imageIcon );
-    }
-    
-    private String tourToString( List<Integer> cityList )
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append( "Tour: " );
-        cityList.stream()
-                .forEach( city -> { stringBuilder.append( city ).append( ' ' ); } );
-        return stringBuilder.toString();
     }
 }

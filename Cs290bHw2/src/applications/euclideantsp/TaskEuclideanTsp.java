@@ -24,7 +24,7 @@
 package applications.euclideantsp;
 
 import api.Task;
-import static clients.ClientEuclideanTsp.CITIES;
+//import static clients.ClientEuclideanTsp.CITIES;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +37,21 @@ import util.PermutationEnumerator;
  */
 public class TaskEuclideanTsp implements Task<List<Integer>>
 { 
+    static final public double[][] CITIES =
+    {
+	{ 1, 1 },
+	{ 8, 1 },
+	{ 8, 8 },
+	{ 1, 8 },
+	{ 2, 2 },
+	{ 7, 2 },
+	{ 7, 7 },
+	{ 2, 7 },
+	{ 3, 3 },
+	{ 6, 3 },
+	{ 6, 6 },
+	{ 3, 6 }
+    };
     static final public double[][] DISTANCES = initializeDistances();
     final static Integer ONE = 1;
     final static Integer TWO = 2;
