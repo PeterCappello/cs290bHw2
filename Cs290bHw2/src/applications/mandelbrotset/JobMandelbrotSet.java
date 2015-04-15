@@ -101,7 +101,7 @@ public class JobMandelbrotSet implements Job<Integer[][]>
     public Integer[][] getValue() { return counts; }
 
     @Override
-    public JLabel view( Integer[][] counts ) 
+    public JLabel viewResult( Integer[][] counts ) 
     {
         final Image image = new BufferedImage( N_PIXELS, N_PIXELS, BufferedImage.TYPE_INT_ARGB );
         final Graphics graphics = image.getGraphics();

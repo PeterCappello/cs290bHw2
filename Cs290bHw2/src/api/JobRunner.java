@@ -78,7 +78,7 @@ public class JobRunner<T> extends JFrame
         try { job.compose( space ); }
         catch( RemoteException exception ) { throw exception; }
         
-        view( job.view( job.getValue() ) );
+        view( job.viewResult( job.getValue() ) );
         Logger.getLogger( this.getClass().getCanonicalName() ).log( Level.INFO, "Job run time: {0} ms.", 
                 ( System.nanoTime() - startTime) / 1000000 );
 
