@@ -24,7 +24,6 @@
 package applications.euclideantsp;
 
 import api.Task;
-//import static clients.ClientEuclideanTsp.CITIES;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
