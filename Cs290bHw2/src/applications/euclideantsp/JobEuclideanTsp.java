@@ -97,7 +97,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     @Override
     public JLabel viewResult( List<Integer> cityList ) 
     {
-        Logger.getLogger( this.getClass().getCanonicalName() ).log(Level.INFO, "Tour: {0}", cityList.toString());
+        Logger.getLogger( this.getClass().getCanonicalName() ).log( Level.INFO, "Tour: {0}", cityList.toString() );
         Integer[] tour = cityList.toArray( new Integer[0] );
 
         // display the graph graphically, as it were
