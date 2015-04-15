@@ -28,9 +28,6 @@ import api.JobRunner;
 import api.Result;
 import api.Space;
 import api.Task;
-import applications.euclideantsp.JobEuclideanTsp;
-import static clients.ClientMandelbrot.ITERATION_LIMIT;
-import static clients.ClientMandelbrot.N_PIXELS;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -126,7 +123,7 @@ public class JobMandelbrotSet implements Job<Integer[][]>
     public static void main( String[] args ) throws Exception
     {
         final JobMandelbrotSet job = new JobMandelbrotSet();
-        final JobRunner jobRunner = new JobRunner( job, "Mandelbrot Set Visualizer" );
+        final JobRunner jobRunner = new JobRunner( job, "Mandelbrot Set Visualizer", "" );
         jobRunner.run();
     }
 }

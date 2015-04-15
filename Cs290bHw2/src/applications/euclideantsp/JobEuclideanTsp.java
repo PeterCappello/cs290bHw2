@@ -168,7 +168,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     public static void main( String[] args ) throws Exception
     {
         final JobEuclideanTsp job = new JobEuclideanTsp();
-        final JobRunner jobRunner = new JobRunner( job, "Euclidean TSP" );
+        final JobRunner jobRunner = new JobRunner( job, "Euclidean TSP", "" );
         jobRunner.run();
     }
 }
