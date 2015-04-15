@@ -24,14 +24,24 @@
 package applications.mandelbrotset;
 
 import api.Job;
+import api.JobRunner;
 import api.Result;
 import api.Space;
 import api.Task;
+import applications.euclideantsp.JobEuclideanTsp;
+import static clients.ClientMandelbrot.ITERATION_LIMIT;
+import static clients.ClientMandelbrot.N_PIXELS;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 /**
  *
@@ -92,4 +102,31 @@ public class JobMandelbrotSet implements Job<Integer[][]>
 
     @Override
     public Integer[][] getValue() { return counts; }
+
+    @Override
+    public JLabel view( Integer[][] counts ) 
+    {
+        final Image image = new BufferedImage( N_PIXELS, N_PIXELS, BufferedImage.TYPE_INT_ARGB );
+        final Graphics graphics = image.getGraphics();
+        for ( int i = 0; i < counts.length; i++ )
+            for ( int j = 0; j < counts.length; j++ )
+            {
+                graphics.setColor( getColor( counts[i][j] ) );
+                graphics.fillRect( i, N_PIXELS - j, 1, 1 );
+            }
+        final ImageIcon imageIcon = new ImageIcon( image );
+        return new JLabel( imageIcon );
+    }
+    
+    private Color getColor( int iterationCount )
+    {
+        return iterationCount == ITERATION_LIMIT ? Color.BLACK : Color.WHITE;
+    }
+    
+    public static void main( String[] args ) throws Exception
+    {
+        final JobMandelbrotSet job = new JobMandelbrotSet();
+        final JobRunner jobRunner = new JobRunner( job, "Mandelbrot Set Visualizer" );
+        jobRunner.run();
+    }
 }

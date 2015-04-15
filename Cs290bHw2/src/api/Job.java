@@ -25,6 +25,7 @@ package api;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import javax.swing.JLabel;
 
 /**
  *
@@ -43,4 +44,6 @@ public interface Job<T>
     void compose( Space space ) throws RemoteException;
     
     T getValue();
+    
+    abstract JLabel view( final T returnValue );
 }

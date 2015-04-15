@@ -23,10 +23,17 @@
  */
 package api;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import system.ComputerImpl;
 import system.SpaceImpl;
 
@@ -35,20 +42,26 @@ import system.SpaceImpl;
  * @author Peter Cappello
  * @param <T> type if value returned by getValue.
  */
-public class JobRunner<T>
+public class JobRunner<T> extends JFrame
 {
     final private Job<T> job;
     final private Space space;
+    final private long startTime = System.nanoTime();
     
-    public JobRunner( Job job, String domainName ) throws RemoteException, NotBoundException, MalformedURLException
+    public JobRunner( Job job, String title, String domainName ) throws RemoteException, NotBoundException, MalformedURLException
     { 
+        System.setSecurityManager( new SecurityManager() );
+        setTitle( title );
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         this.job = job;
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
         space = (Space) Naming.lookup( url );
     }
     
-    public JobRunner( Job job ) throws RemoteException 
+    public JobRunner( Job job, String title ) throws RemoteException 
     { 
+        setTitle( title );
+        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         this.job = job;
         this.space = new SpaceImpl();
         for ( int i = 0; i < Runtime.getRuntime().availableProcessors(); i++ )
@@ -64,5 +77,17 @@ public class JobRunner<T>
         
         try { job.compose( space ); }
         catch( RemoteException exception ) { throw exception; }
+        add( job.view( job.getValue() ) );
+        Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Job run time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
+
+    }
+    
+    private void add( final JLabel jLabel )
+    {
+        final Container container = getContentPane();
+        container.setLayout( new BorderLayout() );
+        container.add( new JScrollPane( jLabel ), BorderLayout.CENTER );
+        pack();
+        setVisible( true );
     }
 }

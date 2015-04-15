@@ -53,7 +53,7 @@ abstract public class Client<T> extends JFrame
         setTitle( title );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         this.job = job;
-        jobRunner = new JobRunner( job );
+        jobRunner = new JobRunner( job, title );
     }
     
     public Client( final String title, Job<T> job, String spaceDomainName ) 
@@ -70,7 +70,6 @@ abstract public class Client<T> extends JFrame
      *
      * @throws RemoteException
      */
-//    public void run( final Job<T> job ) throws RemoteException
     public void run() throws RemoteException
     {
         jobRunner.run();
