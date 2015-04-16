@@ -26,7 +26,9 @@ package api;
 import java.io.Serializable;
 
 /**
- *
+ * The result of executing a Task: Its execute methods return value,
+ * and the elapsed time to execute the task, as seen by the Computer that
+ * executed it.
  * @author Peter Cappello
  * @param <T> type of return value of corresponding Task.
  */
@@ -35,6 +37,12 @@ public class Result<T> implements Serializable
     private final T taskReturnValue;
     private final long taskRunTime;
 
+    /**
+     *
+     * @param taskReturnValue the Task execute method return value
+     * @param taskRunTime the elapsed time to execute the task, 
+     * as seen by the Computer that executed it.
+     */
     public Result( T taskReturnValue, long taskRunTime )
     {
         assert taskReturnValue != null;
@@ -43,8 +51,18 @@ public class Result<T> implements Serializable
         this.taskRunTime = taskRunTime;
     }
 
+    /**
+     * Get the Task execute method return value.
+     * @return the Task execute method return value
+     */
     public T getTaskReturnValue() { return taskReturnValue; }
 
+    /**
+     * Get  elapsed time to execute the task, 
+     * as seen by the Computer that executed it.
+     * @return the elapsed time to execute the task, 
+     * as seen by the Computer that executed it.
+     */
     public long getTaskRunTime() { return taskRunTime; }
     
     @Override

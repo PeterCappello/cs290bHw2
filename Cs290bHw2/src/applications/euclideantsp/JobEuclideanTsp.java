@@ -41,7 +41,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 /**
- *
+ * A Job to compute a Euclidean Traveling Salesman Problem (TSP).
  * @author Peter Cappello
  */
 public class JobEuclideanTsp implements Job<List<Integer>>
@@ -92,7 +92,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     }
 
     @Override
-    public List<Integer> getValue() { return tour; }
+    public List<Integer> value() { return tour; }
 
     @Override
     public JLabel viewResult( List<Integer> cityList ) 

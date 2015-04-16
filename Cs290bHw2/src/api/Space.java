@@ -34,14 +34,47 @@ import system.Computer;
  */
 public interface Space extends Remote 
 {
+
+    /**
+     * Port on which RMI registry is running for this service.
+     */
     public static int PORT = 8001;
+
+    /**
+     * String name for service used in RMI registry.
+     */
     public static String SERVICE_NAME = "Space";
 
+    /**
+     * Put a list of Tasks into the task queue.
+     * @param taskList the list of Tasks.
+     * @throws RemoteException occurs if there is a communication problem or
+     * the remote service is not responding.
+     */
     void putAll ( List<Task> taskList ) throws RemoteException;
 
+    /**
+     * Take (i.e., remove and return) a result from the result queue.
+   
+     * @return the removed result.
+     * @throws RemoteException occurs if there is a communication problem or
+     * the remote service is not responding.
+     */
     Result take() throws RemoteException;
 
+    /**
+     *
+     * @throws RemoteException occurs if there is a communication problem or
+     * the remote service is not responding.
+     */
     void exit() throws RemoteException;
     
+    /**
+     *
+     * @param computer a remote reference to a Computer that is requesting
+     * participation as a worker.
+     * @throws RemoteException occurs if there is a communication problem or
+     * the remote service is not responding.
+     */
     void register( Computer computer ) throws RemoteException;
 }

@@ -98,7 +98,7 @@ public class JobMandelbrotSet implements Job<Integer[][]>
     }
 
     @Override
-    public Integer[][] getValue() { return counts; }
+    public Integer[][] value() { return counts; }
 
     @Override
     public JLabel viewResult( Integer[][] counts ) 
