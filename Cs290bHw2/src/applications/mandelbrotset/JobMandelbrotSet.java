@@ -46,14 +46,15 @@ import javax.swing.JLabel;
  */
 public class JobMandelbrotSet implements Job<Integer[][]>
 {
-    public static final double LOWER_LEFT_X = -0.7510975859375;
-    public static final double LOWER_LEFT_Y = 0.1315680625;
-    public static final double EDGE_LENGTH = 0.01611;
-    public static final int N_PIXELS = 1024;
-    public static final int ITERATION_LIMIT = 512;
-    public static final int BLOCK_SIZE = 256;
-          private List<Task> taskList;
-          private Integer[][] counts;
+    static public final double LOWER_LEFT_X = -0.7510975859375;
+    static public final double LOWER_LEFT_Y = 0.1315680625;
+    static public final double EDGE_LENGTH = 0.01611;
+    static public final int N_PIXELS = 1024;
+    static public final int ITERATION_LIMIT = 512;
+    static public final int BLOCK_SIZE = 256;
+    
+           private List<Task> taskList;
+           private Integer[][] counts;
     
     public JobMandelbrotSet() {}
     

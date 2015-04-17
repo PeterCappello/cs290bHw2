@@ -143,6 +143,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                     taskQ.add( task );
                     computerProxies.remove( computer );
                     Logger.getLogger( SpaceImpl.class.getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+                    break;
                 } 
                 catch ( InterruptedException ex ) 
                 {

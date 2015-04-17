@@ -52,12 +52,11 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
 	{ 3, 6 }
     };
     static final public double[][] DISTANCES = initializeDistances();
-    final static Integer ONE = 1;
-    final static Integer TWO = 2;
+    static final private Integer ONE = 1;
+    static final private Integer TWO = 2;
     
     final private int secondCity;
     final private List<Integer> partialCityList;
-//    final private double cost;
         
     public TaskEuclideanTsp( int secondCity, List<Integer> partialCityList )
     {

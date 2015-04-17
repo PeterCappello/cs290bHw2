@@ -39,6 +39,7 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
             
     /**
      * Execute a Task.
+     * @param <T> type of return value.
      * @param task to be executed.
      * @return the return-value of the Task call method.
      * @throws RemoteException
@@ -61,7 +62,6 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
          */
         final String domainName = "localhost";
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
-//        final Computer2Space space = (Computer2Space) Naming.lookup( url );
         final Space space = (Space) Naming.lookup( url );
 
         space.register( new ComputerImpl() );
@@ -73,5 +73,9 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
      * @throws RemoteException - always!
      */
     @Override
-    public void exit() throws RemoteException { System.out.println("Computer # tasks complete:" + numTasks ); /*System.exit( 0 ); */ }
+    public void exit() throws RemoteException 
+    { 
+        System.exit( 0 );
+        System.out.println("Computer # tasks complete:" + numTasks );
+    }
 }
