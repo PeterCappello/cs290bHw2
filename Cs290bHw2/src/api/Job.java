@@ -37,7 +37,6 @@ public interface Job<T>
 
     /**
      * Decompose a problem into a List of Tasks.
-     * @param space the Space to which the tasks are sent to be executed.
      * @return the List of generated Tasks
      * @throws RemoteException occurs if there is a communication problem or
      * the remote service is not responding.
