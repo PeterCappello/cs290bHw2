@@ -59,7 +59,7 @@ public class JobMandelbrotSet implements Job<Integer[][]>
     public JobMandelbrotSet() {}
     
     @Override
-    public List<Task> decompose( Space space ) throws RemoteException
+    public List<Task> decompose() throws RemoteException
     {
         taskList = new LinkedList<>();
         final int numBlocks = N_PIXELS / BLOCK_SIZE;

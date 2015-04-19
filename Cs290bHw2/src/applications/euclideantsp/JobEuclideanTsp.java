@@ -55,7 +55,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     public JobEuclideanTsp() {}
     
     @Override
-    public List<Task> decompose( Space space ) throws RemoteException
+    public List<Task> decompose() throws RemoteException
     {
         taskList = new LinkedList<>();
         final List<Integer> integerList = new LinkedList<>();

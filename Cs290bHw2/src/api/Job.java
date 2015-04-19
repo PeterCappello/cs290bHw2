@@ -42,7 +42,7 @@ public interface Job<T>
      * @throws RemoteException occurs if there is a communication problem or
      * the remote service is not responding.
      */
-    List<Task> decompose( Space space ) throws RemoteException;
+    List<Task> decompose() throws RemoteException;
     
     /**
      * Take a result for each generated task, and composes these results into

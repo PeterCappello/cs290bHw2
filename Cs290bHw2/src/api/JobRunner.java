@@ -89,16 +89,15 @@ public class JobRunner<T> extends JFrame
      */
     public void run() throws RemoteException
     {
-        try { space.putAll( job.decompose( space ) ); }
+        try { space.putAll( job.decompose() ); }
         catch ( RemoteException exception ) { throw exception; }
         
         try { job.compose( space ); }
         catch( RemoteException exception ) { throw exception; }
         
-        view(job.viewResult(job.value() ) );
-        Logger.getLogger( this.getClass().getCanonicalName() ).log( Level.INFO, "Job run time: {0} ms.", 
-                ( System.nanoTime() - startTime) / 1000000 );
-
+        view( job.viewResult(job.value() ) );
+        Logger.getLogger( this.getClass().getCanonicalName() )
+              .log( Level.INFO, "Job run time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
     }
     
     private void view( final JLabel jLabel )
