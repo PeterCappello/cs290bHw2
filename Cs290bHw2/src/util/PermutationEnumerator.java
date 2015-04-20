@@ -24,7 +24,6 @@
 package util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 //import org.paukov.combinatorics.Factory;
 //import org.paukov.combinatorics.Generator;
@@ -152,46 +151,5 @@ public class PermutationEnumerator<T>
             }
         }
         return returnValue;
-    }
-    
-    public static void main( String[] args ) throws Exception
-    {
-        List<Integer> integerList = Arrays.asList( new Integer[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 } );
-        long startTime = System.nanoTime();
-        myScheme( integerList );
-//        alternative( integerList );
-        long runTime = ( System.nanoTime() - startTime ) / 1000000;
-        System.out.println( "Runtime: " + runTime  + " ms." );
-    }
-    
-    private static String listToString( List<Integer> integerList )
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append( "{ " );
-        integerList.stream().forEach((integer) -> 
-        {
-            stringBuilder.append( integer ).append( ' ' );
-        } );
-        stringBuilder.append( '}' );
-        return stringBuilder.toString();
-    }
-    
-    private static void myScheme( List<Integer> integerList )
-    {
-        PermutationEnumerator<Integer> permutationEnumerator = new PermutationEnumerator<>( integerList );
-//        int i = 0;
-        for ( ; permutationEnumerator.next() != null; ) 
-        {
-//            System.out.print        ++i + ": " + listToString( permutation) );
-//            permutation = permutationEnumerator.next();
-        }
-    }
-    
-    private static void alternative( List<Integer> integerList )
-    {
-        // Use Combinatoricslib-2.1 to generate permutations
-//        ICombinatoricsVector<Integer> initialVector = Factory.createVector( integerList );
-//        Generator<Integer> generator = Factory.createPermutationGenerator(initialVector);
-//        for (ICombinatoricsVector<Integer> perm : generator) {}
     }
 }
