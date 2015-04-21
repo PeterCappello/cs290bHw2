@@ -84,6 +84,18 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         computerProxies.values().forEach( proxy -> proxy.exit() );
         System.exit( 0 );
     }
+    
+    /**
+     * Removes dead ComputerProxy from computerProxies.
+     * Currently, only needed to support exit method.
+     * @param computer -  key of Computer -> ComputerProxy mapping to be removed.
+     */
+    private void unregister( Computer computer ) 
+    { 
+        ComputerProxy computerProxy = computerProxies.remove( computer ); 
+        Logger.getLogger( this.getClass().getName() )
+              .log( Level.WARNING, "ComputerProxy {0} removed.", computerProxy.computerId );
+    }
 
     /**
      * Register Computer with Space.  
@@ -143,6 +155,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                     taskQ.add( task );
                     computerProxies.remove( computer );
                     Logger.getLogger( SpaceImpl.class.getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+                    SpaceImpl.this.unregister( computer );
                     break;
                 } 
                 catch ( InterruptedException ex ) 
