@@ -43,14 +43,15 @@ import java.util.logging.Logger;
  */
 public class SpaceImpl extends UnicastRemoteObject implements Space
 {
-    private final BlockingQueue<Task> taskQ     = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Task>     taskQ = new LinkedBlockingQueue<>();
     private final BlockingQueue<Result> resultQ = new LinkedBlockingQueue<>();
     private final Map<Computer,ComputerProxy> computerProxies = new HashMap<>();
     private static int computerIds = 0;
     
     public SpaceImpl() throws RemoteException 
     {
-        Logger.getLogger( SpaceImpl.class.getName() ).log( Level.INFO, "Space started." );
+        Logger.getLogger( this.getClass().getName() )
+              .log( Level.INFO, "Space started." );
     }
     
     @Override
@@ -72,7 +73,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         try { return resultQ.take(); } 
         catch ( InterruptedException exception ) 
         {
-            Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, null, exception);
+            Logger.getLogger( this.getClass().getName())
+                  .log(Level.INFO, null, exception);
         }
         assert false; // should never reach this point
         return null;
@@ -109,7 +111,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         final ComputerProxy computerproxy = new ComputerProxy( computer );
         computerProxies.put( computer, computerproxy );
         computerproxy.start();
-        Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, "Computer {0} started.", computerproxy.computerId);
+        Logger.getLogger( this.getClass().getName())
+              .log(Level.INFO, "Computer {0} started.", computerproxy.computerId);
     }
     
     public static void main( String[] args ) throws Exception
@@ -154,13 +157,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                 {
                     taskQ.add( task );
                     computerProxies.remove( computer );
-                    Logger.getLogger( SpaceImpl.class.getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
-                    SpaceImpl.this.unregister( computer );
+                    Logger.getLogger( this.getClass().getName() )
+                          .log( Level.WARNING, "Computer {0} failed.", computerId );
                     break;
                 } 
                 catch ( InterruptedException ex ) 
                 {
-                    Logger.getLogger( SpaceImpl.class.getName()).log( Level.INFO, null, ex );
+                    Logger.getLogger( this.getClass().getName())
+                          .log( Level.INFO, null, ex );
                 }
             }
         }
