@@ -103,6 +103,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
               .log(Level.INFO, "Computer {0} started.", computerproxy.computerId);
     }
     
+    private void unregister( Task task, Computer computer )
+    {
+        taskQ.add( task );
+        ComputerProxy computerProxy = computerProxies.remove( computer );
+        Logger.getLogger( this.getClass().getName() )
+              .log( Level.WARNING, "Computer {0} failed.", computerProxy.computerId );
+    }
+    
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
@@ -143,10 +151,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                 }
                 catch ( RemoteException ignore )
                 {
-                    taskQ.add( task );
-                    computerProxies.remove( computer );
-                    Logger.getLogger( this.getClass().getName() )
-                          .log( Level.WARNING, "Computer {0} failed.", computerId );
+                    SpaceImpl.this.unregister( task, computer );
                     break;
                 } 
                 catch ( InterruptedException ex ) 
