@@ -151,7 +151,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                 }
                 catch ( RemoteException ignore )
                 {
-                    SpaceImpl.this.unregister( task, computer );
+                    unregister( task, computer );
                     break;
                 } 
                 catch ( InterruptedException ex ) 
