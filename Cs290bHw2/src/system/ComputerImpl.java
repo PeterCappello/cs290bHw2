@@ -57,13 +57,9 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
-        /**
-         * Its main method gets the domain name of its Space's machine from the command line. 
-         */
         final String domainName = "localhost";
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
         final Space space = (Space) Naming.lookup( url );
-
         space.register( new ComputerImpl() );
         System.out.println( "Computer running." );
     }
