@@ -27,7 +27,7 @@ import api.Task;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import util.PermutationEnumerator;
+import util.Permutation;
 
 /**
  * Find a tour of minimum cost among those that start with city 0, 
@@ -76,7 +76,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
         double shortestTourDistance = tourDistance( shortestTour );
         
         // Use my permutation enumerator
-        PermutationEnumerator<Integer> permutationEnumerator = new PermutationEnumerator<>( partialCityList );
+        Permutation<Integer> permutationEnumerator = new Permutation<>( partialCityList );
         for ( List<Integer> subtour = permutationEnumerator.next(); subtour != null; subtour = permutationEnumerator.next() ) 
         {
             List<Integer> tour = new ArrayList<>( subtour );
