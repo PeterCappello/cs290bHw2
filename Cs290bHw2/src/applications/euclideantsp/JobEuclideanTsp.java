@@ -161,8 +161,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
                                y - VERTEX_DIAMETER/2,
                               VERTEX_DIAMETER, VERTEX_DIAMETER);
         }
-        final ImageIcon imageIcon = new ImageIcon( image );
-        return new JLabel( imageIcon );
+        return new JLabel( new ImageIcon( image ) );
     }
     
     public static void main( String[] args ) throws Exception

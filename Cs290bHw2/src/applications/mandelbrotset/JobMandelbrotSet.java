@@ -112,8 +112,7 @@ public class JobMandelbrotSet implements Job<Integer[][]>
                 graphics.setColor( getColor( counts[i][j] ) );
                 graphics.fillRect( i, N_PIXELS - j, 1, 1 );
             }
-        final ImageIcon imageIcon = new ImageIcon( image );
-        return new JLabel( imageIcon );
+        return new JLabel( new ImageIcon( image ) );
     }
     
     private Color getColor( int iterationCount )
