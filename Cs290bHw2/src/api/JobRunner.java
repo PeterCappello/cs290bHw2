@@ -59,7 +59,7 @@ public class JobRunner<T> extends JFrame
      * @throws NotBoundException There is no Space service bound in the RMI registry.
      * @throws MalformedURLException the URL provided for the Space RMI registry is malformed.
      */
-    public JobRunner( Job job, String title, String domainName ) 
+    public JobRunner( Job<T> job, String title, String domainName ) 
            throws RemoteException, NotBoundException, MalformedURLException
     { 
         System.setSecurityManager( new SecurityManager() );
@@ -89,12 +89,8 @@ public class JobRunner<T> extends JFrame
      */
     public void run() throws RemoteException
     {
-        try { space.putAll( job.decompose() ); }
-        catch ( RemoteException exception ) { throw exception; }
-        
-        try { job.compose( space ); }
-        catch( RemoteException exception ) { throw exception; }
-        
+        space.putAll( job.decompose() ); 
+        job.compose( space );
         view( job.viewResult(job.value() ) );
         Logger.getLogger( this.getClass().getCanonicalName() )
               .log( Level.INFO, "Job run time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );

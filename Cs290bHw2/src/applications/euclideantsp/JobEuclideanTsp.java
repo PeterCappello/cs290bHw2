@@ -81,7 +81,8 @@ public class JobEuclideanTsp implements Job<List<Integer>>
         for ( Task task : taskList ) 
         {
             Result<List<Integer>> result = space.take();
-            Logger.getLogger(this.getClass().getCanonicalName() ).log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
+            Logger.getLogger(this.getClass().getCanonicalName() )
+                  .log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
             double tourDistance = TaskEuclideanTsp.tourDistance( result.getTaskReturnValue() );
             if ( tourDistance < shortestTourDistance )
             {
@@ -166,8 +167,6 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     
     public static void main( String[] args ) throws Exception
     {
-        final JobEuclideanTsp job = new JobEuclideanTsp();
-        final JobRunner jobRunner = new JobRunner( job, "Euclidean TSP", "" );
-        jobRunner.run();
+        new JobRunner( new JobEuclideanTsp(), "Euclidean TSP", "" ).run();
     }
 }

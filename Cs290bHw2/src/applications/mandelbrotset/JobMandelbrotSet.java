@@ -122,8 +122,6 @@ public class JobMandelbrotSet implements Job<Integer[][]>
     
     public static void main( String[] args ) throws Exception
     {
-        final JobMandelbrotSet job = new JobMandelbrotSet();
-        final JobRunner jobRunner = new JobRunner( job, "Mandelbrot Set Visualizer", "" );
-        jobRunner.run();
+        new JobRunner( new JobMandelbrotSet(), "Mandelbrot Set Visualizer", "" ).run();
     }
 }
