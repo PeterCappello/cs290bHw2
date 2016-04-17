@@ -83,7 +83,7 @@ public class JobMandelbrotSet implements Job<Integer[][]>
         counts = new Integer[N_PIXELS][N_PIXELS];
         for ( Task task : taskList ) 
         {
-            final Result<ResultValueMandelbrotSet> result = ( Result<ResultValueMandelbrotSet> ) space.take();
+            final Result<ResultValueMandelbrotSet> result = space.take();
             final ResultValueMandelbrotSet resultValue = result.getTaskReturnValue();
             
             // copy blockCounts into counts array
@@ -122,6 +122,6 @@ public class JobMandelbrotSet implements Job<Integer[][]>
     
     public static void main( String[] args ) throws Exception
     {
-        new JobRunner( new JobMandelbrotSet(), "Mandelbrot Set Visualizer", "" ).run();
+        new JobRunner<>( new JobMandelbrotSet(), "Mandelbrot Set Visualizer", "" ).run();
     }
 }
