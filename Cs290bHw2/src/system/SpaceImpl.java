@@ -57,10 +57,11 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     @Override
     synchronized public void putAll( List<Task> taskList )
     {
-        for ( Task task : taskList )
-        {
-            taskQ.add( task );
-        }
+//        for ( Task task : taskList )
+//        {
+//            taskQ.add( task );
+//        }
+        taskList.forEach( task -> taskQ.add( task ) );
     }
 
     /**
@@ -116,6 +117,13 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         System.setSecurityManager( new SecurityManager() );
         LocateRegistry.createRegistry( Space.PORT )
                       .rebind( Space.SERVICE_NAME, new SpaceImpl() );
+    }
+    
+    @Override
+    public String toString() 
+    {
+        return "SpaceImpl{ " + "taskQ: " + taskQ + ", resultQ: " + resultQ 
+                             + ", computerProxies: " + computerProxies + '}';
     }
     
     private class ComputerProxy extends Thread implements Computer 
