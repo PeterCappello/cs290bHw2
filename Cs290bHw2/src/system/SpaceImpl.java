@@ -57,10 +57,6 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     @Override
     synchronized public void putAll( List<Task> taskList )
     {
-//        for ( Task task : taskList )
-//        {
-//            taskQ.add( task );
-//        }
         taskList.forEach( task -> taskQ.add( task ) );
     }
 
@@ -84,6 +80,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     @Override
     public void exit() throws RemoteException 
     {
+        Logger.getLogger( this.getClass().getName() )
+              .log(Level.INFO, "Space: on exit: killing {0} ComputerProxies.", computerProxies.size() );
         computerProxies.values().forEach( proxy -> proxy.exit() );
         System.exit( 0 );
     }
@@ -100,8 +98,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         final ComputerProxy computerproxy = new ComputerProxy( computer );
         computerProxies.put( computer, computerproxy );
         computerproxy.start();
-        Logger.getLogger( this.getClass().getName())
-              .log(Level.INFO, "Computer {0} started.", computerproxy.computerId);
+        Logger.getLogger( this.getClass().getName() )
+              .log(Level.INFO, "Computer {0} started.", computerproxy.computerId );
     }
     
     private void unregister( Task task, Computer computer )
@@ -160,12 +158,12 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                 catch ( RemoteException ignore )
                 {
                     unregister( task, computer );
-                    break;
+                    return;
                 } 
-                catch ( InterruptedException ex ) 
+                catch ( InterruptedException exception ) 
                 {
                     Logger.getLogger( this.getClass().getName())
-                          .log( Level.INFO, null, ex );
+                          .log( Level.INFO, null, exception );
                 }
             }
         }

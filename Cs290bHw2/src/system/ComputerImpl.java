@@ -26,6 +26,8 @@ import api.*;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An implementation of the Remote Computer interface.
@@ -71,7 +73,8 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
     @Override
     public void exit() throws RemoteException 
     { 
+        Logger.getLogger( this.getClass().getName() )
+              .log(Level.INFO, "Computer: on exit, # completed [0] tasks:", numTasks );
         System.exit( 0 );
-        System.out.println("Computer # tasks complete:" + numTasks );
     }
 }
