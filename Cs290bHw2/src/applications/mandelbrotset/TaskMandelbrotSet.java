@@ -79,27 +79,25 @@ public class TaskMandelbrotSet implements Task<ResultValueMandelbrotSet>
             {
                 counts[row][col] = getIterationCount( row, col, delta );
             }
-        return new ResultValueMandelbrotSet( counts,blockRow, blockCol );
+        return new ResultValueMandelbrotSet( counts, blockRow, blockCol );
     }
     
     @Override
     public String toString()
     {
         return String.format( "%s \n\t x: %e \n\t y: %e \n\t length: %e \n\t pixels: %d \n\t iteration limit: %d \n\t blockRow: %d \n\t blockCol: %d\n", 
-                getClass(), lowerLeftX, lowerLeftY, edgeLength, numPixels, iterationLimit, blockRow, blockCol );
+               getClass(), lowerLeftX, lowerLeftY, edgeLength, numPixels, iterationLimit, blockRow, blockCol );
     }
     
     private int getIterationCount( int row, int col, double delta )
     {
-        final double x = lowerLeftX + row * delta;
-        final double y = lowerLeftY + col * delta;
-        return getIterationCount( x, y );
+        return getIterationCount( new Complex( lowerLeftX + row * delta, lowerLeftY + col * delta ) );
     }
     
-    private int getIterationCount( double x, double y ) {
-        Complex c = new Complex( x, y );
+    private int getIterationCount( Complex c ) {
         int iteration = 0;
-        for ( Complex z = new Complex( x, y ); z.sizeSquared() <= 4.0 && iteration < iterationLimit; iteration++ ) {
+        for ( Complex z = new Complex( c ); z.sizeSquared() <= 4.0 && iteration < iterationLimit; iteration++ ) 
+        {
             z.square().add( c );
         }
         return iteration;
