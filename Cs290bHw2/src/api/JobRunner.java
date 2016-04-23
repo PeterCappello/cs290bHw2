@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 peter.
+ * Copyright 2016 peter.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ import system.SpaceImpl;
  * @author Peter Cappello
  * @param <T> type of value returned by value.
  */
-public class JobRunner<T> extends JFrame
+public class JobRunner<T> extends JFrame 
 {
     final private Job<T> job;
     final private Space  space;
@@ -66,15 +66,15 @@ public class JobRunner<T> extends JFrame
         setTitle( title );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         this.job = job;
-        if ( domainName.isEmpty() )
+        if ( domainName.isEmpty() ) 
         {
             space = new SpaceImpl();
-            for ( int i = 0; i < Runtime.getRuntime().availableProcessors(); i++ )
+            for ( int i = 0; i < Runtime.getRuntime().availableProcessors(); i++ ) 
             {
                 space.register( new ComputerImpl() );
             }
-        }
-        else
+        } 
+        else 
         {
             final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
             space = (Space) Naming.lookup( url );
@@ -87,7 +87,7 @@ public class JobRunner<T> extends JFrame
      * @throws RemoteException occurs if there is a communication problem or
      * the remote service is not responding
      */
-    public void run() throws RemoteException
+    public void run() throws RemoteException 
     {
         space.putAll( job.decompose() ); 
         job.compose( space );
@@ -96,7 +96,7 @@ public class JobRunner<T> extends JFrame
               .log( Level.INFO, "Job run time: {0} ms.", ( System.nanoTime() - startTime) / 1000000 );
     }
     
-    private void view( final JLabel jLabel )
+    private void view( final JLabel jLabel ) 
     {
         final Container container = getContentPane();
         container.setLayout( new BorderLayout() );

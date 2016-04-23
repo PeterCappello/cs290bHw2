@@ -4,11 +4,13 @@ package util;
  * 
  * @author Peter Cappello
  */
-public class Complex {
+public class Complex 
+{
     private double real;
     private double imag;
 
-    public Complex( double real, double imag ) {
+    public Complex( double real, double imag ) 
+    {
         this.real = real;
         this.imag = imag;
     }
@@ -18,13 +20,15 @@ public class Complex {
         this.imag = c.imag;
     }
 
-    public Complex add( Complex operand ) {
+    public Complex add( Complex operand ) 
+    {
         real += operand.real;
         imag += operand.imag;
         return this;
     }
 
-    public Complex multiply( Complex operand ) {
+    public Complex multiply( Complex operand ) 
+    {
         double temp = real * operand.real - imag * operand.imag;
         imag = imag * operand.real + real * operand.imag;
         real = temp;
@@ -35,7 +39,8 @@ public class Complex {
     
     public double sizeSquared() { return real * real + imag * imag; }
     
-    public Complex square() { 
+    public Complex square() 
+    { 
         double temp = real * real - imag * imag;
         imag = 2 * real * imag;
         real = temp;
@@ -43,7 +48,8 @@ public class Complex {
     }
 
     @Override
-    public String toString() {
+    public String toString() 
+    {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append( " (").append( real ).append( ',' ).append( imag ).append( ") ");
         return new String( stringBuilder );
