@@ -77,7 +77,8 @@ public class TaskMandelbrotSet implements Task<ResultValueMandelbrotSet>
         for ( int row = 0; row < numPixels; row++ )
             for ( int col = 0; col < numPixels; col++ )
             {
-                counts[row][col] = getIterationCount( row, col, delta );
+                final Complex c = new Complex( lowerLeftX + row * delta, lowerLeftY + col * delta );
+                counts[row][col] = getIterationCount( c );
             }
         return new ResultValueMandelbrotSet( counts, blockRow, blockCol );
     }
@@ -89,12 +90,8 @@ public class TaskMandelbrotSet implements Task<ResultValueMandelbrotSet>
                getClass(), lowerLeftX, lowerLeftY, edgeLength, numPixels, iterationLimit, blockRow, blockCol );
     }
     
-    private int getIterationCount( int row, int col, double delta )
+    private int getIterationCount( Complex c ) 
     {
-        return getIterationCount( new Complex( lowerLeftX + row * delta, lowerLeftY + col * delta ) );
-    }
-    
-    private int getIterationCount( Complex c ) {
         int iteration = 0;
         for ( Complex z = new Complex( c ); z.sizeSquared() <= 4.0 && iteration < iterationLimit; iteration++ ) 
         {
