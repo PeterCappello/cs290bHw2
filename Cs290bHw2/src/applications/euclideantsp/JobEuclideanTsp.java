@@ -57,12 +57,12 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     @Override
     public List<Task> decompose() throws RemoteException
     {
-        taskList = new LinkedList<>();
         final List<Integer> integerList = new LinkedList<>();
         for ( int i = 1; i < TaskEuclideanTsp.CITIES.length; i++ )
         {
             integerList.add( i );
         }
+        taskList = new LinkedList<>();
 //        for ( int i = 0; i < integerList.size(); i++ )
 //        {
 //            final List<Integer> partialList = new LinkedList<>( integerList );
