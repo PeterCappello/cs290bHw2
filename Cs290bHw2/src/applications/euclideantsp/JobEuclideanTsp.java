@@ -49,7 +49,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     static final private int NUM_PIXALS = 600;
     static final public  double[][] CITIES = TaskEuclideanTsp.CITIES;
     
-    private List<Task> taskList = new LinkedList<>();
+    private final List<Task> taskList = new LinkedList<>();
     private List<Integer> tour;
     
     public JobEuclideanTsp() {}
