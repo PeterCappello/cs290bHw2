@@ -14,6 +14,11 @@ public class Complex
         this.real = real;
         this.imag = imag;
     }
+    
+    public Complex( Complex c ) {
+        this.real = c.real;
+        this.imag = c.imag;
+    }
 
     public Complex add( Complex operand ) 
     {
