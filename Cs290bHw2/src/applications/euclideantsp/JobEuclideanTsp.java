@@ -70,15 +70,15 @@ public class JobEuclideanTsp implements Job<List<Integer>>
 //            final Task task = new TaskEuclideanTsp( i + 1, partialList );
 //            taskList.add( task );
 //        }
-//        return taskList;
 
-        // Here is a slightly more functional alternative
+        // A slightly more functional version of the code above.
         integerList.forEach( i -> 
         {
             final List<Integer> partialList = new LinkedList<>( integerList );
             partialList.remove( i - 1);
             taskList.add( new TaskEuclideanTsp( i, partialList ) );
         } );
+        
         return taskList;
     }
 
