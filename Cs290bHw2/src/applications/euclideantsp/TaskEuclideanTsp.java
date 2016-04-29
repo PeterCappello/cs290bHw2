@@ -36,35 +36,35 @@ import util.Permutation;
  */
 public class TaskEuclideanTsp implements Task<List<Integer>>
 { 
-//    static final public double[][] CITIES =
-//    {
-//	{ 1, 1 },
-//	{ 8, 1 },
-//	{ 8, 8 },
-//	{ 1, 8 },
-//	{ 2, 2 },
-//	{ 7, 2 },
-//	{ 7, 7 },
-//	{ 2, 7 },
-//	{ 3, 3 },
-//	{ 6, 3 },
-//	{ 6, 6 },
-//	{ 3, 6 }
-//    };
     static final public double[][] CITIES =
     {
-        { 0, 0 },
 	{ 1, 1 },
-	{ 2, 0 },
-	{ 3, 1 },
-	{ 4, 0 },
-	{ 5, 1 },
-	{ 6, 0 },
-	{ 7, 1 },
-	{ 8, 0 },
-        { 9, 1 },
-	{ 10, 0 }
+	{ 8, 1 },
+	{ 8, 8 },
+	{ 1, 8 },
+	{ 2, 2 },
+	{ 7, 2 },
+	{ 7, 7 },
+	{ 2, 7 },
+	{ 3, 3 },
+	{ 6, 3 },
+	{ 6, 6 },
+	{ 3, 6 }
     };
+//    static final public double[][] CITIES =
+//    {
+//        { 0, 0 },
+//	{ 1, 1 },
+//	{ 2, 0 },
+//	{ 3, 1 },
+//	{ 4, 0 },
+//	{ 5, 1 },
+//	{ 6, 0 },
+//	{ 7, 1 },
+//	{ 8, 0 },
+//        { 9, 1 },
+//	{ 10, 0 }
+//    };
     static final public double[][] DISTANCES = initializeDistances();
     static final private Integer ONE = 1;
     static final private Integer TWO = 2;
