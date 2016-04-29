@@ -49,7 +49,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     static final private int NUM_PIXALS = 600;
     static final public  double[][] CITIES = TaskEuclideanTsp.CITIES;
     
-    private List<Task> taskList;
+    private List<Task> taskList = new LinkedList<>();
     private List<Integer> tour;
     
     public JobEuclideanTsp() {}
@@ -62,7 +62,6 @@ public class JobEuclideanTsp implements Job<List<Integer>>
         {
             integerList.add( i );
         }
-        taskList = new LinkedList<>();
 //        for ( int i = 0; i < integerList.size(); i++ )
 //        {
 //            final List<Integer> partialList = new LinkedList<>( integerList );
