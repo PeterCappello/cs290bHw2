@@ -47,7 +47,7 @@ import javax.swing.JLabel;
 public class JobEuclideanTsp implements Job<List<Integer>>
 {
     static final private int NUM_PIXALS = 600;
-    static final public  double[][] CITIES = TaskEuclideanTsp.CITIES;
+    static final public  double[][] CITIES = TaskTspEuclidean.CITIES;
     
     private final List<Task> taskList = new LinkedList<>();
     private List<Integer> tour;
@@ -58,24 +58,17 @@ public class JobEuclideanTsp implements Job<List<Integer>>
     public List<Task> decompose() throws RemoteException
     {
         final List<Integer> integerList = new LinkedList<>();
-        for ( int i = 1; i < TaskEuclideanTsp.CITIES.length; i++ )
+        for ( int i = 1; i < TaskTspEuclidean.CITIES.length; i++ )
         {
             integerList.add( i );
         }
-//        for ( int i = 0; i < integerList.size(); i++ )
-//        {
-//            final List<Integer> partialList = new LinkedList<>( integerList );
-//            partialList.remove( i );
-//            final Task task = new TaskEuclideanTsp( i + 1, partialList );
-//            taskList.add( task );
-//        }
 
-        // A slightly more functional version of the code above.
         integerList.forEach( i -> 
         {
             final List<Integer> partialList = new LinkedList<>( integerList );
             partialList.remove( i - 1 );
-            taskList.add( new TaskEuclideanTsp( i, partialList ) );
+            final Task task = new TaskTspEuclidean( i, partialList );
+            taskList.add( task );
         } );
         
         return taskList;
@@ -91,7 +84,7 @@ public class JobEuclideanTsp implements Job<List<Integer>>
             Result<List<Integer>> result = space.take();
             Logger.getLogger(this.getClass().getCanonicalName() )
                   .log(Level.INFO, "Task time: {0} ms.", result.getTaskRunTime() );
-            double tourDistance = TaskEuclideanTsp.tourDistance( result.getTaskReturnValue() );
+            double tourDistance = TaskTspEuclidean.tourDistance( result.getTaskReturnValue() );
             if ( tourDistance < shortestTourDistance )
             {
                 tour = result.getTaskReturnValue();

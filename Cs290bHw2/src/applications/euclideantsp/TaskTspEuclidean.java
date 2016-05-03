@@ -34,7 +34,7 @@ import util.Permutation;
  * followed by city secondCity.
  * @author Peter Cappello
  */
-public class TaskEuclideanTsp implements Task<List<Integer>>
+public class TaskTspEuclidean implements Task<List<Integer>>
 { 
     static final public double[][] CITIES =
     {
@@ -72,7 +72,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>>
     final private int secondCity;
     final private List<Integer> partialCityList;
         
-    public TaskEuclideanTsp( int secondCity, List<Integer> partialCityList )
+    public TaskTspEuclidean( int secondCity, List<Integer> partialCityList )
     {
         this.secondCity = secondCity;
         this.partialCityList = partialCityList;
